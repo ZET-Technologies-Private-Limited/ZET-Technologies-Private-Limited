@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact — Zet Technologies</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  :root{--white:#fff;--off:#f8f7f5;--ink:#0d0d0d;--mid:#6b6b6b;--light:#e8e6e1;--accent:#0891b2;--accent2:#0e7490;}
+  html{scroll-behavior:smooth;}
+  body{font-family:'DM Sans',sans-serif;background:var(--white);color:var(--ink);overflow-x:hidden;cursor:none;}
+  #cursor{width:12px;height:12px;background:var(--accent);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width .3s,height .3s;}
+  #cursor-ring{width:36px;height:36px;border:1.5px solid rgba(8,145,178,.4);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:all .15s ease;}
+  nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:20px 60px;display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,.9);backdrop-filter:blur(20px);border-bottom:1px solid rgba(0,0,0,.06);}
+  .nav-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:1.25rem;letter-spacing:-.02em;color:var(--ink);text-decoration:none;}
+  .nav-logo span{color:var(--accent);}
+  .nav-links{display:flex;gap:40px;list-style:none;}
+  .nav-links a{font-size:.875rem;color:var(--mid);text-decoration:none;transition:color .2s;}
+  .nav-links a:hover,.nav-links a.active{color:var(--ink);}
+  .nav-cta{background:var(--ink);color:var(--white);padding:10px 24px;border-radius:100px;font-size:.875rem;font-weight:500;text-decoration:none;transition:all .2s;}
+  .nav-cta:hover{background:var(--accent);}
+  .reveal{opacity:0;transform:translateY(36px);transition:opacity .8s ease,transform .8s ease;}
+  .reveal.visible{opacity:1;transform:translateY(0);}
+  .d1{transition-delay:.12s;}.d2{transition-delay:.24s;}.d3{transition-delay:.38s;}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
+
+  /* HERO */
+  .page-hero{padding:160px 60px 80px;background:var(--off);position:relative;overflow:hidden;display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;}
+  .hero-wavy{position:absolute;bottom:0;left:0;right:0;}
+  .page-tag{display:inline-flex;align-items:center;gap:8px;background:rgba(8,145,178,.08);border:1px solid rgba(8,145,178,.18);padding:6px 16px;border-radius:100px;font-size:.78rem;font-weight:500;color:var(--accent);letter-spacing:.06em;text-transform:uppercase;margin-bottom:32px;opacity:0;animation:fadeUp .8s .2s forwards;}
+  .page-hero h1{font-family:'Instrument Serif',serif;font-size:clamp(2.8rem,5vw,4.5rem);line-height:1.08;letter-spacing:-.02em;margin-bottom:20px;opacity:0;animation:fadeUp .9s .4s forwards;}
+  .page-hero h1 em{font-style:italic;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+  .page-hero p{font-size:1.05rem;line-height:1.75;color:var(--mid);font-weight:300;opacity:0;animation:fadeUp .9s .6s forwards;}
+  .contact-options{display:flex;flex-direction:column;gap:16px;opacity:0;animation:fadeUp .9s .9s forwards;}
+  .contact-opt{padding:24px 28px;background:var(--white);border:1px solid var(--light);border-radius:20px;display:flex;align-items:center;gap:20px;text-decoration:none;color:var(--ink);transition:all .3s;}
+  .contact-opt:hover{border-color:var(--accent);box-shadow:0 4px 30px rgba(8,145,178,.1);transform:translateX(6px);}
+  .opt-icon{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0;}
+  .opt-text h3{font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;margin-bottom:4px;}
+  .opt-text p{font-size:.85rem;color:var(--mid);font-weight:300;}
+  .opt-arrow{margin-left:auto;color:var(--light);font-size:1.1rem;transition:color .2s,transform .2s;}
+  .contact-opt:hover .opt-arrow{color:var(--accent);transform:translateX(4px);}
+
+  /* MAIN FORM AREA */
+  .contact-main{padding:100px 60px 140px;display:grid;grid-template-columns:1.2fr 1fr;gap:100px;align-items:start;}
+  
+  /* FORM */
+  .form-wrap{position:sticky;top:100px;}
+  .form-label{font-size:.78rem;text-transform:uppercase;letter-spacing:.12em;color:var(--mid);margin-bottom:24px;display:block;}
+  .form-wrap h2{font-family:'Instrument Serif',serif;font-size:clamp(2rem,3vw,2.8rem);line-height:1.15;letter-spacing:-.02em;margin-bottom:40px;}
+  .form-type-tabs{display:flex;gap:8px;margin-bottom:40px;}
+  .ftype{padding:10px 22px;border-radius:100px;font-size:.85rem;font-weight:500;cursor:pointer;border:1px solid var(--light);color:var(--mid);transition:all .2s;background:var(--white);}
+  .ftype.active{background:var(--accent);color:var(--white);border-color:var(--accent);}
+  .form-row{margin-bottom:24px;}
+  .form-row.split{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  label{display:block;font-size:.8rem;font-weight:500;color:var(--ink);margin-bottom:8px;letter-spacing:.02em;}
+  input,textarea,select{width:100%;padding:14px 18px;border:1px solid var(--light);border-radius:12px;font-family:'DM Sans',sans-serif;font-size:.95rem;color:var(--ink);background:var(--white);outline:none;transition:border-color .2s,box-shadow .2s;-webkit-appearance:none;}
+  input:focus,textarea:focus,select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(8,145,178,.1);}
+  textarea{resize:vertical;min-height:140px;line-height:1.6;}
+  .form-submit{width:100%;padding:16px;background:var(--ink);color:var(--white);border:none;border-radius:12px;font-family:'DM Sans',sans-serif;font-size:1rem;font-weight:500;cursor:pointer;transition:all .3s;position:relative;overflow:hidden;}
+  .form-submit::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,var(--accent),var(--accent2));opacity:0;transition:opacity .3s;}
+  .form-submit:hover::after{opacity:1;}
+  .form-submit span{position:relative;z-index:1;}
+  .success-msg{display:none;padding:20px;background:#ecfdf5;border:1px solid #a7f3d0;border-radius:12px;color:#065f46;font-size:.95rem;text-align:center;margin-top:20px;}
+
+  /* SIDEBAR INFO */
+  .contact-sidebar{display:flex;flex-direction:column;gap:48px;padding-top:8px;}
+  .sidebar-block{}
+  .sidebar-block .block-label{font-size:.75rem;text-transform:uppercase;letter-spacing:.1em;color:var(--mid);margin-bottom:16px;display:block;}
+  .sidebar-block h3{font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:700;margin-bottom:8px;}
+  .sidebar-block p{font-size:.9rem;line-height:1.7;color:var(--mid);font-weight:300;}
+  .sidebar-block a{color:var(--accent);text-decoration:none;font-weight:500;}
+  .office-card{padding:28px;background:var(--off);border-radius:20px;border:1px solid var(--light);}
+  .office-card .city{font-family:'Syne',sans-serif;font-weight:700;font-size:1rem;margin-bottom:8px;}
+  .office-card address{font-style:normal;font-size:.875rem;color:var(--mid);line-height:1.7;font-weight:300;}
+  .office-card .badge{display:inline-block;margin-top:12px;font-size:.72rem;background:rgba(8,145,178,.1);color:var(--accent);padding:4px 12px;border-radius:100px;font-weight:500;}
+  .social-links{display:flex;flex-direction:column;gap:0;}
+  .social-item{display:flex;align-items:center;gap:12px;padding:14px 0;border-bottom:1px solid var(--light);text-decoration:none;color:var(--ink);transition:color .2s;}
+  .social-item:hover{color:var(--accent);}
+  .s-icon{width:36px;height:36px;border-radius:10px;background:var(--off);display:flex;align-items:center;justify-content:center;font-size:1rem;}
+  .s-name{font-size:.9rem;font-weight:500;}
+  .s-handle{margin-left:auto;font-size:.8rem;color:var(--mid);}
+  .response-time{padding:24px;background:var(--ink);border-radius:20px;color:var(--white);}
+  .rt-label{font-size:.75rem;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,.4);margin-bottom:12px;}
+  .rt-value{font-family:'Syne',sans-serif;font-size:2rem;font-weight:800;color:var(--white);margin-bottom:4px;}
+  .rt-value span{font-size:1rem;font-weight:400;color:rgba(255,255,255,.5);}
+  .rt-note{font-size:.8rem;color:rgba(255,255,255,.4);}
+
+  footer{background:var(--ink);border-top:1px solid rgba(255,255,255,.06);padding:60px;display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:60px;}
+  .footer-brand .logo{font-family:'Syne',sans-serif;font-size:1.25rem;font-weight:800;color:var(--white);margin-bottom:16px;}
+  .footer-brand .logo span{color:var(--accent);}
+  .footer-brand p{font-size:.875rem;color:rgba(255,255,255,.3);line-height:1.7;font-weight:300;max-width:280px;}
+  .footer-col h4{font-size:.75rem;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.25);margin-bottom:20px;}
+  .footer-col a{display:block;color:rgba(255,255,255,.45);text-decoration:none;font-size:.875rem;margin-bottom:10px;transition:color .2s;}
+  .footer-col a:hover{color:var(--white);}
+  .footer-bottom{padding:24px 60px;background:var(--ink);border-top:1px solid rgba(255,255,255,.05);display:flex;justify-content:space-between;}
+  .footer-bottom p{font-size:.8rem;color:rgba(255,255,255,.2);}
+
+  @media(max-width:900px){
+    nav{padding:16px 24px;}.nav-links{display:none;}
+    .page-hero{grid-template-columns:1fr;padding:100px 24px 60px;}
+    .contact-main{grid-template-columns:1fr;padding:60px 24px;gap:60px;}
+    .form-wrap{position:static;}
+    footer{grid-template-columns:1fr;gap:32px;}
+    .footer-bottom{flex-direction:column;gap:8px;padding:24px;}
+  }
+</style>
+</head>
+<body>
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+
+<nav>
+  <a href="zettech.html" class="nav-logo">Zet<span>.</span>Technologies</a>
+  <ul class="nav-links">
+    <li><a href="zettech.html">Home</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="careers.html">Careers</a></li>
+    <li><a href="blog.html">Blog</a></li>
+    <li><a href="contact.html" class="active">Contact</a></li>
+  </ul>
+  <a href="#form" class="nav-cta">Send a Message</a>
+</nav>
+
+<section class="page-hero">
+  <div>
+    <div class="page-tag">Let's Talk</div>
+    <h1>Start a <em>conversation</em> with us</h1>
+    <p>Whether you're a platform looking to integrate, an investor curious about our roadmap, or a gig worker wanting to join — we're easy to reach and fast to respond.</p>
+  </div>
+  <div class="contact-options">
+    <a href="/cdn-cgi/l/email-protection#c9a1aca5a5a689b3acbdbdacaaa1e7a0a7" class="contact-opt">
+      <div class="opt-icon" style="background:#e0f2fe;">📧</div>
+      <div class="opt-text"><h3>Email us directly</h3><p><span class="__cf_email__" data-cfemail="b5ddd0d9d9daf5cfd0c1c1d0d6dd9bdcdb">[email&#160;protected]</span> — we reply within 24 hours</p></div>
+      <span class="opt-arrow">→</span>
+    </a>
+    <a href="#form" class="contact-opt">
+      <a href="#form" class="contact-opt" style="width:100%;">
+      <div class="opt-icon" style="background:#dcfce7;">🤝</div>
+      <div class="opt-text"><h3>Partner with us</h3><p>Integrate the Zet workforce layer into your platform</p></div>
+      <span class="opt-arrow">→</span>
+      </a>
+    </a>
+    <a href="careers.html" class="contact-opt">
+      <div class="opt-icon" style="background:#fef3c7;">💼</div>
+      <div class="opt-text"><h3>Explore careers</h3><p>14 open roles across engineering, ops and design</p></div>
+      <span class="opt-arrow">→</span>
+    </a>
+    <a href="/cdn-cgi/l/email-protection#6e1e1c0b1d1d2e140b1a1a0b0d06400700" class="contact-opt">
+      <div class="opt-icon" style="background:#f3e8ff;">📰</div>
+      <div class="opt-text"><h3>Media enquiries</h3><p><span class="__cf_email__" data-cfemail="d4a4a6b1a7a794aeb1a0a0b1b7bcfabdba">[email&#160;protected]</span> — for journalists and publications</p></div>
+      <span class="opt-arrow">→</span>
+    </a>
+  </div>
+</section>
+
+<div class="contact-main" id="form">
+  <!-- FORM -->
+  <div class="form-wrap reveal">
+    <span class="form-label">Send a message</span>
+    <h2>Tell us what you're looking for</h2>
+    <div class="form-type-tabs">
+      <div class="ftype active">Partnership</div>
+      <div class="ftype">Investment</div>
+      <div class="ftype">General</div>
+      <div class="ftype">Press</div>
+    </div>
+    <form id="contactForm" onsubmit="handleSubmit(event)">
+      <div class="form-row split">
+        <div>
+          <label>First Name</label>
+          <input type="text" placeholder="Arjun" required>
+        </div>
+        <div>
+          <label>Last Name</label>
+          <input type="text" placeholder="Sharma">
+        </div>
+      </div>
+      <div class="form-row">
+        <label>Work Email</label>
+        <input type="email" placeholder="arjun@company.in" required>
+      </div>
+      <div class="form-row">
+        <label>Company / Organization</label>
+        <input type="text" placeholder="Acme Delivery Co.">
+      </div>
+      <div class="form-row">
+        <label>Phone Number</label>
+        <input type="tel" placeholder="+91 98765 43210">
+      </div>
+      <div class="form-row">
+        <label>Location</label>
+        <input type="text" placeholder="City, State">
+      </div>
+      <div class="form-row">
+        <label>What are you building or looking for?</label>
+        <select>
+          <option value="">Select an option...</option>
+          <option>Integrating Zet workforce API into my platform</option>
+          <option>Exploring investment / partnership</option>
+          <option>Press / media inquiry</option>
+          <option>General question or feedback</option>
+          <option>Something else</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <label>Tell us more</label>
+        <textarea placeholder="Describe your use case, question, or what you'd like to explore with us..."></textarea>
+      </div>
+      <div class="form-row">
+        <label>How did you hear about us?</label>
+        <input type="text" placeholder="Referral, LinkedIn, Google, etc.">
+      </div>
+      <div class="form-row">
+        <label>Preferred contact method</label>
+        <select>
+          <option value="">Select...</option>
+          <option>Email</option>
+          <option>Phone</option>
+          <option>WhatsApp</option>
+        </select>
+      </div>
+      <button type="submit" class="form-submit"><span>Send Message →</span></button>
+    </form>
+    <div class="success-msg" id="successMsg">
+      ✅ Message sent! We'll get back to you within 24 hours.
+    </div>
+    <div class="faq-section" style="margin-top:40px;">
+      <h3 style="font-family:'Syne',sans-serif;font-size:1.2rem;margin-bottom:16px;">Frequently Asked Questions</h3>
+      <div style="margin-bottom:18px;"><strong>Q:</strong> How quickly do you respond?<br><em>A:</em> We reply to most queries within 24 hours, Monday–Saturday.</div>
+      <div style="margin-bottom:18px;"><strong>Q:</strong> Can I schedule a call or demo?<br><em>A:</em> Yes! Mention your interest in the form and we’ll arrange a meeting.</div>
+      <div style="margin-bottom:18px;"><strong>Q:</strong> Is Zet open to partnerships?<br><em>A:</em> Absolutely. We’re actively looking for new partners and platforms.</div>
+      <div style="margin-bottom:18px;"><strong>Q:</strong> Where is your team based?<br><em>A:</em> Our HQ is in Bangalore, but we operate remotely across India.</div>
+    </div>
+  </div>
+
+  <!-- SIDEBAR -->
+  <div class="contact-sidebar reveal d2">
+    <div class="response-time">
+      <div class="rt-label">Average response time</div>
+      <div class="rt-value">< 24 <span>hours</span></div>
+      <div class="rt-note">Mon – Sat, 9am – 7pm IST</div>
+    </div>
+
+    <div class="sidebar-block">
+      <span class="block-label">Headquarters</span>
+      <div class="office-card">
+        <div class="city">Bangalore, Karnataka</div>
+        <address>
+          Koramangala 5th Block,<br>
+          Bangalore – 560 095,<br>
+          Karnataka, India
+        </address>
+        <span class="badge">Hub open to remote employees</span>
+      </div>
+    </div>
+
+    <div class="sidebar-block">
+      <span class="block-label">Follow us</span>
+      <div class="social-links">
+        <a href="#" class="social-item">
+          <div class="s-icon">🐦</div>
+          <span class="s-name">Twitter / X</span>
+          <span class="s-handle">@zettech_in</span>
+        </a>
+        <a href="#" class="social-item">
+          <div class="s-icon">💼</div>
+          <span class="s-name">LinkedIn</span>
+          <span class="s-handle">Zet Technologies</span>
+        </a>
+        <a href="#" class="social-item">
+          <div class="s-icon">📸</div>
+          <span class="s-name">Instagram</span>
+          <span class="s-handle">@zettech</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="sidebar-block">
+      <span class="block-label">Quick links</span>
+      <p style="font-size:.9rem;line-height:1.8;font-weight:300;">
+        Want to read API docs? <a href="#">Developer portal →</a><br>
+        Looking for our deck? <a href="#">Download PDF →</a><br>
+        Press kit & assets? <a href="/cdn-cgi/l/email-protection#84f4f6e1f7f7c4fee1f0f0e1e7ecaaedea"><span class="__cf_email__" data-cfemail="99e9ebfceaead9e3fcededfcfaf1b7f0f7">[email&#160;protected]</span> →</a>
+      </p>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-brand"><div class="logo">Zet<span>.</span>Technologies</div><p>A new startup building real software solutions with full-stack, AI, mobile, and DevOps expertise.</p></div>
+  <div class="footer-col"><h4>Platform</h4><a href="#">Workforce API</a><a href="#">Demand Engine</a><a href="#">Gig Portal</a></div>
+  <div class="footer-col"><h4>Company</h4><a href="about.html">About Us</a><a href="careers.html">Careers</a><a href="blog.html">Blog</a></div>
+  <div class="footer-col"><h4>Contact</h4><a href="contact.html">Get in Touch</a><a href="#">Partner with us</a><a href="#">Investor Relations</a></div>
+</footer>
+<div class="footer-bottom"><p>© 2025 Zet Technologies Private Limited.</p><p>Made in India 🇮🇳</p></div>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+const cursor=document.getElementById('cursor'),ring=document.getElementById('cursor-ring');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cursor.style.left=mx+'px';cursor.style.top=my+'px';});
+(function a(){rx+=(mx-rx)*.12;ry+=(my-ry)*.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(a)})();
+document.querySelectorAll('a,button,.ftype,input,textarea,select').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{cursor.style.width='20px';cursor.style.height='20px';ring.style.width='50px';ring.style.height='50px';});
+  el.addEventListener('mouseleave',()=>{cursor.style.width='12px';cursor.style.height='12px';ring.style.width='36px';ring.style.height='36px';});
+});
+document.querySelectorAll('.ftype').forEach(t=>{t.addEventListener('click',()=>{document.querySelectorAll('.ftype').forEach(x=>x.classList.remove('active'));t.classList.add('active');});});
+function handleSubmit(e){
+  e.preventDefault();
+  const btn=document.querySelector('.form-submit');
+  btn.innerHTML='<span>Sending...</span>';
+  btn.disabled=true;
+  setTimeout(()=>{
+    document.getElementById('contactForm').reset();
+    document.getElem

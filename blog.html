@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blog & Press — Zet Technologies</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  :root{--white:#fff;--off:#f8f7f5;--ink:#0d0d0d;--mid:#6b6b6b;--light:#e8e6e1;--accent:#7c3aed;--accent2:#6d28d9;}
+  html{scroll-behavior:smooth;}
+  body{font-family:'DM Sans',sans-serif;background:var(--white);color:var(--ink);overflow-x:hidden;cursor:none;}
+  #cursor{width:12px;height:12px;background:var(--accent);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width .3s,height .3s;}
+  #cursor-ring{width:36px;height:36px;border:1.5px solid rgba(124,58,237,.4);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:all .15s ease;}
+  nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:20px 60px;display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,.9);backdrop-filter:blur(20px);border-bottom:1px solid rgba(0,0,0,.06);}
+  .nav-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:1.25rem;letter-spacing:-.02em;color:var(--ink);text-decoration:none;}
+  .nav-logo span{color:var(--accent);}
+  .nav-links{display:flex;gap:40px;list-style:none;}
+  .nav-links a{font-size:.875rem;color:var(--mid);text-decoration:none;transition:color .2s;}
+  .nav-links a:hover,.nav-links a.active{color:var(--ink);}
+  .nav-cta{background:var(--ink);color:var(--white);padding:10px 24px;border-radius:100px;font-size:.875rem;font-weight:500;text-decoration:none;transition:all .2s;}
+  .nav-cta:hover{background:var(--accent);}
+  .reveal{opacity:0;transform:translateY(36px);transition:opacity .8s ease,transform .8s ease;}
+  .reveal.visible{opacity:1;transform:translateY(0);}
+  .d1{transition-delay:.1s;}.d2{transition-delay:.22s;}.d3{transition-delay:.34s;}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
+
+  /* HERO */
+  .page-hero{padding:160px 60px 100px;background:var(--off);position:relative;overflow:hidden;}
+  .hero-stripe{position:absolute;right:0;top:0;bottom:0;width:45%;background:linear-gradient(135deg,rgba(124,58,237,.05),rgba(109,40,217,.03));border-left:1px solid rgba(124,58,237,.08);}
+  .hero-content{position:relative;z-index:2;max-width:700px;}
+  .page-tag{display:inline-flex;align-items:center;gap:8px;background:rgba(124,58,237,.08);border:1px solid rgba(124,58,237,.18);padding:6px 16px;border-radius:100px;font-size:.78rem;font-weight:500;color:var(--accent);letter-spacing:.06em;text-transform:uppercase;margin-bottom:36px;opacity:0;animation:fadeUp .8s .2s forwards;}
+  .page-hero h1{font-family:'Instrument Serif',serif;font-size:clamp(2.8rem,5vw,4.8rem);line-height:1.08;letter-spacing:-.02em;margin-bottom:24px;opacity:0;animation:fadeUp .9s .4s forwards;}
+  .page-hero p{font-size:1.1rem;line-height:1.75;color:var(--mid);font-weight:300;max-width:520px;opacity:0;animation:fadeUp .9s .6s forwards;}
+  .hero-filter{margin-top:48px;display:flex;gap:10px;flex-wrap:wrap;opacity:0;animation:fadeUp .9s .8s forwards;}
+  .filter-pill{padding:8px 20px;border-radius:100px;font-size:.8rem;font-weight:500;cursor:pointer;border:1px solid var(--light);color:var(--mid);transition:all .2s;background:var(--white);}
+  .filter-pill.active,.filter-pill:hover{background:var(--accent);color:var(--white);border-color:var(--accent);}
+
+  /* FEATURED POST */
+  .featured{padding:80px 60px 0;}
+  .featured-post{display:grid;grid-template-columns:1.1fr 1fr;gap:80px;align-items:center;padding:60px;background:var(--ink);border-radius:32px;margin-bottom:80px;}
+  .feat-label{font-size:.75rem;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.4);margin-bottom:20px;display:flex;align-items:center;gap:8px;}
+  .feat-label::before{content:'';width:20px;height:1px;background:rgba(255,255,255,.25);}
+  .featured-post h2{font-family:'Instrument Serif',serif;font-size:clamp(1.8rem,3vw,2.8rem);line-height:1.2;letter-spacing:-.02em;color:var(--white);margin-bottom:20px;}
+  .featured-post p{font-size:1rem;line-height:1.75;color:rgba(255,255,255,.5);font-weight:300;margin-bottom:32px;}
+  .post-meta{display:flex;align-items:center;gap:16px;margin-bottom:32px;}
+  .author-av{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-size:.9rem;}
+  .author-name{font-size:.875rem;font-weight:500;color:rgba(255,255,255,.7);}
+  .post-date{font-size:.8rem;color:rgba(255,255,255,.35);}
+  .read-link{display:inline-flex;align-items:center;gap:8px;color:var(--white);font-size:.9rem;font-weight:500;text-decoration:none;border-bottom:1px solid rgba(255,255,255,.2);padding-bottom:2px;transition:border-color .2s;}
+  .read-link:hover{border-color:var(--white);}
+  .feat-visual{border-radius:20px;aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:4rem;position:relative;overflow:hidden;}
+  .feat-visual-bg{position:absolute;inset:0;border-radius:20px;}
+
+  /* POSTS GRID */
+  .posts-grid{padding:0 60px 140px;display:grid;grid-template-columns:repeat(3,1fr);gap:48px;}
+  .post-item{cursor:pointer;}
+  .post-thumb{aspect-ratio:16/9;border-radius:20px;display:flex;align-items:center;justify-content:center;font-size:2.5rem;margin-bottom:24px;position:relative;overflow:hidden;transition:transform .3s;}
+  .post-item:hover .post-thumb{transform:scale(1.02);}
+  .post-category{display:inline-block;font-size:.72rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:4px 10px;border-radius:100px;margin-bottom:14px;}
+  .cat-engineering{background:#f3e8ff;color:#7c3aed;}
+  .cat-operations{background:#ecfdf5;color:#059669;}
+  .cat-product{background:#eff6ff;color:#2563eb;}
+  .cat-company{background:#fff7ed;color:#c2410c;}
+  .cat-press{background:#fef2f2;color:#dc2626;}
+  .post-item h3{font-family:'Instrument Serif',serif;font-size:1.35rem;line-height:1.3;letter-spacing:-.01em;margin-bottom:12px;transition:color .2s;}
+  .post-item:hover h3{color:var(--accent);}
+  .post-item p{font-size:.9rem;line-height:1.7;color:var(--mid);font-weight:300;margin-bottom:20px;}
+  .post-footer{display:flex;align-items:center;justify-content:space-between;}
+  .post-author{display:flex;align-items:center;gap:10px;}
+  .p-av{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.75rem;}
+  .p-name{font-size:.8rem;color:var(--mid);}
+  .p-date{font-size:.8rem;color:var(--light);}
+
+  /* PRESS */
+  .press{padding:0 60px 100px;}
+  .press-header{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:48px;}
+  .press-header h2{font-family:'Instrument Serif',serif;font-size:clamp(1.8rem,2.5vw,2.5rem);letter-spacing:-.02em;}
+  .press-header a{font-size:.875rem;color:var(--mid);text-decoration:none;border-bottom:1px solid var(--light);padding-bottom:2px;}
+  .press-logos{display:flex;gap:32px;align-items:center;flex-wrap:wrap;}
+  .press-mention{padding:24px 32px;background:var(--off);border-radius:16px;display:flex;flex-direction:column;gap:12px;flex:1;min-width:200px;transition:all .3s;cursor:pointer;border:1px solid transparent;}
+  .press-mention:hover{border-color:var(--accent);background:var(--white);}
+  .press-outlet{font-family:'Syne',sans-serif;font-size:.9rem;font-weight:700;color:var(--mid);}
+  .press-headline{font-size:.9rem;line-height:1.55;color:var(--ink);font-weight:400;}
+  .press-date{font-size:.75rem;color:var(--mid);}
+
+  /* CTA */
+  .cta-strip{padding:120px 60px;background:var(--ink);text-align:center;position:relative;overflow:hidden;}
+  .cta-bg{position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 50%,rgba(124,58,237,.1) 0%,transparent 70%);}
+  .cta-strip h2{font-family:'Instrument Serif',serif;font-size:clamp(2.2rem,4vw,4rem);color:var(--white);line-height:1.1;letter-spacing:-.02em;max-width:620px;margin:0 auto 28px;position:relative;}
+  .cta-strip h2 em{font-style:italic;background:linear-gradient(135deg,#c4b5fd,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+  .cta-strip p{color:rgba(255,255,255,.4);font-size:1rem;margin-bottom:40px;position:relative;}
+  .cta-btns{display:flex;gap:16px;justify-content:center;position:relative;}
+  .btn-white{background:var(--white);color:var(--ink);padding:14px 36px;border-radius:100px;font-size:.95rem;font-weight:500;text-decoration:none;transition:all .3s;}
+  .btn-white:hover{transform:scale(1.02);}
+  .btn-ghost-w{border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.7);padding:14px 36px;border-radius:100px;font-size:.95rem;font-weight:500;text-decoration:none;transition:all .3s;}
+  .btn-ghost-w:hover{border-color:rgba(255,255,255,.5);color:var(--white);}
+
+  footer{background:var(--ink);border-top:1px solid rgba(255,255,255,.06);padding:60px;display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:60px;}
+  .footer-brand .logo{font-family:'Syne',sans-serif;font-size:1.25rem;font-weight:800;color:var(--white);margin-bottom:16px;}
+  .footer-brand .logo span{color:var(--accent);}
+  .footer-brand p{font-size:.875rem;color:rgba(255,255,255,.3);line-height:1.7;font-weight:300;max-width:280px;}
+  .footer-col h4{font-size:.75rem;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.25);margin-bottom:20px;}
+  .footer-col a{display:block;color:rgba(255,255,255,.45);text-decoration:none;font-size:.875rem;margin-bottom:10px;transition:color .2s;}
+  .footer-col a:hover{color:var(--white);}
+  .footer-bottom{padding:24px 60px;background:var(--ink);border-top:1px solid rgba(255,255,255,.05);display:flex;justify-content:space-between;}
+  .footer-bottom p{font-size:.8rem;color:rgba(255,255,255,.2);}
+
+  @media(max-width:900px){
+    nav{padding:16px 24px;}.nav-links{display:none;}
+    .page-hero,.featured,.press,.cta-strip{padding:80px 24px;}
+    .featured-post{grid-template-columns:1fr;gap:40px;padding:36px;}
+    .posts-grid{padding:0 24px 80px;grid-template-columns:1fr;}
+    footer{grid-template-columns:1fr;gap:32px;}
+    .footer-bottom{flex-direction:column;gap:8px;padding:24px;}
+  }
+</style>
+</head>
+<body>
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+
+<nav>
+  <a href="zet-technologies.html" class="nav-logo">Zet<span>.</span>Technologies</a>
+  <ul class="nav-links">
+    <li><a href="zet-technologies.html">Home</a></li>
+    <li><a href="ecosystem.html">Ecosystem</a></li>
+    <li><a href="products.html">Products</a></li>
+    <li><a href="services.html">Services</a></li>
+    <li><a href="founder1.html">Founder</a></li>
+    <li><a href="about1.html">About</a></li>
+    <li><a href="blog.html" class="active">Blog</a></li>
+    <li><a href="contact1.html">Contact</a></li>
+  </ul>
+  <a href="contact1.html" class="nav-cta">Get in Touch</a>
+</nav>
+
+<section class="page-hero">
+  <div class="hero-stripe"></div>
+  <div class="hero-content">
+    <div class="page-tag">Insights & Stories</div>
+    <h1>The Zet Blog</h1>
+    <p>Deep dives into gig economy infrastructure, AI in logistics, and how we're building the platform that powers India's service layer.</p>
+    <div class="hero-filter">
+      <div class="filter-pill active">All</div>
+      <div class="filter-pill">Engineering</div>
+      <div class="filter-pill">Operations</div>
+      <div class="filter-pill">Product</div>
+      <div class="filter-pill">Company</div>
+      <div class="filter-pill">Press</div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURED -->
+<section class="featured">
+  <div class="featured-post reveal">
+    <div>
+      <div class="feat-label">Featured Post</div>
+      <h2>How we cut allocation time from 18 seconds to 2.3 seconds</h2>
+      <p>A deep technical look at the architecture changes, ML model iterations, and infrastructure decisions that made our core routing engine 8x faster.</p>
+      <div class="post-meta">
+        <div class="author-av">👩</div>
+        <div>
+          <div class="author-name">Venkata Sadwil, CTO</div>
+          <div class="post-date">January 14, 2025 · 12 min read</div>
+        </div>
+      </div>
+      <a href="#" class="read-link">Read the full post →</a>
+    </div>
+    <div class="feat-visual" style="background:linear-gradient(135deg,rgba(124,58,237,.15),rgba(109,40,217,.1));border:1px solid rgba(124,58,237,.15);">
+      <div style="text-align:center;position:relative;z-index:1;">
+        <div style="font-family:'Syne',sans-serif;font-size:4rem;font-weight:800;color:white;line-height:1;">2.3<span style="font-size:1.5rem;">s</span></div>
+        <div style="font-size:.8rem;color:rgba(255,255,255,.4);margin-top:8px;letter-spacing:.06em;text-transform:uppercase;">Allocation Time</div>
+        <div style="margin-top:16px;font-size:.75rem;color:rgba(255,255,255,.3);">↓ from 18s</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- POSTS -->
+<div class="posts-grid">
+  <div class="post-item reveal">
+    <div class="post-thumb" style="background:linear-gradient(135deg,#ede9fe,#ddd6fe);">⚡</div>
+    <span class="post-category cat-engineering">Engineering</span>
+    <h3>Building a real-time demand prediction engine for hyperlocal delivery</h3>
+    <p>How we trained an LSTM model on 14 months of city-level order data to predict surges 30 minutes before they happen.</p>
+    <div class="post-footer">
+      <div class="post-author"><div class="p-av" style="background:#ede9fe;">👨‍🔬</div><div class="p-name">Venkata Sadwil</div></div>
+      <div class="p-date">Dec 8, 2024</div>
+    </div>
+  </div>
+  <div class="post-item reveal d1">
+    <div class="post-thumb" style="background:linear-gradient(135deg,#ecfdf5,#d1fae5);">🗺️</div>
+    <span class="post-category cat-operations">Operations</span>
+    <h3>What 6 months of city launch taught us about India's gig workforce</h3>
+    <p>On-the-ground lessons from launching in 12 cities: what works, what doesn't, and what nobody tells you about gig worker onboarding.</p>
+    <div class="post-footer">
+      <div class="post-author"><div class="p-av" style="background:#d1fae5;">👨‍💼</div><div class="p-name">Venkatreddy</div></div>
+      <div class="p-date">Nov 22, 2024</div>
+    </div>
+  </div>
+  <div class="post-item reveal d2">
+    <div class="post-thumb" style="background:linear-gradient(135deg,#eff6ff,#dbeafe);">🔁</div>
+    <span class="post-category cat-product">Product</span>
+    <h3>Designing the Overflow Engine: when your platform serves as infrastructure</h3>
+    <p>The product decisions behind Service Overflow Mode — and why we had to unlearn traditional SaaS design thinking to build it right.</p>
+    <div class="post-footer">
+      <div class="post-author"><div class="p-av" style="background:#dbeafe;">🧑‍💻</div><div class="p-name">Mallela Kranthi Kiran</div></div>
+      <div class="p-date">Nov 5, 2024</div>
+    </div>
+  </div>
+  <div class="post-item reveal">
+    <div class="post-thumb" style="background:linear-gradient(135deg,#fef3c7,#fde68a);">💰</div>
+    <span class="post-category cat-company">Company</span>
+    <h3>How gig workers earn 31% more with multi-platform allocation</h3>
+    <p>A data-driven look at income outcomes for workers who joined our universal layer vs. single-platform alternatives.</p>
+    <div class="post-footer">
+      <div class="post-author"><div class="p-av" style="background:#fde68a;">👨‍💼</div><div class="p-name">Mallela Kranthi Kiran</div></div>
+      <div class="p-date">Oct 18, 2024</div>
+    </div>
+  </div>
+  <div class="post-item reveal d1">
+    <div class="post-thumb" style="background:linear-gradient(135deg,#fce7f3,#fbcfe8);">📡</div>
+    <span class="post-category cat-engineering">Engineering</span>
+    <h3>PostgreSQL vs. Cassandra for real-time worker state: our findings</h3>
+    <p>We benchmarked both for our high-throughput worker availability system. Here's what we found — and why we ultimately went with a hybrid approach.</p>
+    <div class="post-footer">
+      <div class="post-author"><div class="p-av" style="background:#fbcfe8;">👨‍🔬</div><div class="p-name">Venkata Sadwil</div></div>
+      <div class="p-date">Sep 30, 2024</div>
+    </div>
+  </div>
+  <div class="post-item reveal d2">
+    <div class="post-thumb" style="background:linear-gradient(135deg,#fef2f2,#fee2e2);">📰</div>
+    <span class="post-category cat-press">Press</span>
+    <h3>Zet Technologies raises ₹3.2Cr seed round to build universal delivery layer</h3>
+    <p>Our seed funding announcement: what we've built, where we're going, and why we believe in the shared workforce model.</p>
+    <div class="post-footer">
+      <div class="post-author"><div class="p-av" style="background:#fee2e2;">🧑</div><div class="p-name">Zet Team</div></div>
+      <div class="p-date">Aug 12, 2024</div>
+    </div>
+  </div>
+</div>
+
+<!-- PRESS -->
+<section class="press">
+  <div class="press-header reveal">
+    <h2>In the press</h2>
+    <a href="#">View all coverage →</a>
+  </div>
+  <div class="press-logos">
+    <div class="press-mention reveal">
+      <div class="press-outlet">YourStory</div>
+      <div class="press-headline">"Zet is quietly building what Amazon never could for Indian delivery"</div>
+      <div class="press-date">January 2025</div>
+    </div>
+    <div class="press-mention reveal d1">
+      <div class="press-outlet">Inc42</div>
+      <div class="press-headline">"The startup solving India's gig economy fragmentation problem"</div>
+      <div class="press-date">November 2024</div>
+    </div>
+    <div class="press-mention reveal d2">
+      <div class="press-outlet">Economic Times</div>
+      <div class="press-headline">"How AI is reshaping delivery workforce allocation in Indian metros"</div>
+      <div class="press-date">October 2024</div>
+    </div>
+    <div class="press-mention reveal d3">
+      <div class="press-outlet">TechCrunch India</div>
+      <div class="press-headline">"Seed-stage startup Zet wants to be the Twilio of delivery"</div>
+      <div class="press-date">August 2024</div>
+    </div>
+  </div>
+</section>
+
+<section class="cta-strip reveal">
+  <div class="cta-bg"></div>
+  <h2>Get the <em>Zet newsletter</em></h2>
+  <p>Monthly deep dives on gig economy, AI in logistics, and what we're building.</p>
+  <div class="cta-btns">
+    <a href="#" class="btn-white">Subscribe — it's free</a>
+    <a href="contact.html" class="btn-ghost-w">Pitch us a story</a>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-brand"><div class="logo">Zet<span>.</span>Technologies</div><p>Building the universal workforce layer for India's real-world service economy.</p></div>
+  <div class="footer-col"><h4>Platform</h4><a href="#">Workforce API</a><a href="#">Demand Engine</a><a href="#">Gig Portal</a></div>
+  <div class="footer-col"><h4>Company</h4><a href="about.html">About Us</a><a href="careers.html">Careers</a><a href="blog.html">Blog</a></div>
+  <div class="footer-col"><h4>Contact</h4><a href="contact.html">Get in Touch</a><a href="#">Partner with us</a></div>
+</footer>
+<div class="footer-bottom"><p>© 2025 Zet Technologies Private Limited.</p><p>Made in India 🇮🇳</p></div>
+
+<script>
+const cursor=document.getElementById('cursor'),ring=document.getElementById('cursor-ring');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cursor.style.left=mx+'px';cursor.style.top=my+'px';});
+(function a(){rx+=(mx-rx)*.12;ry+=(my-ry)*.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(a)})();
+document.querySelectorAll('a,button,.filter-pill').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{cursor.style.width='20px';cursor.style.height='20px';ring.style.width='50px';ring.style.height='50px';});
+  el.addEventListener('mouseleave',()=>{cursor.style.width='12px';cursor.style.height='12px';ring.style.width='36px';ring.style.height='36px';});
+});
+document.querySelectorAll('.filter-pill').forEach(p=>{p.addEventListener('click',()=>{document.querySelectorAll('.filter-pill').forEach(x=>x.classList.remove('active'));p.classList.add('active');});});
+const obs=new IntersectionObserver(e=>e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('visible');}),{threshold:.1});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+window.addEventListener('scroll',()=>{document.querySelector('nav').style.boxShadow=window.scrollY>60?'0 2px 30px rgba(0,0,0,0.08)':'none';});
+</script>
+</body>
+</html>

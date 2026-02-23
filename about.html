@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About Us — Zet Technologies</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --white: #ffffff;
+    --off: #f8f7f5;
+    --ink: #0d0d0d;
+    --mid: #6b6b6b;
+    --light: #e8e6e1;
+    --accent: #059669; /* emerald — unique for About */
+    --accent2: #0d9488;
+    --glow: rgba(5,150,105,0.12);
+  }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--white); color: var(--ink); overflow-x: hidden; cursor: none; }
+
+  /* CURSOR */
+  #cursor { width:12px;height:12px;background:var(--accent);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width .3s,height .3s,background .3s; }
+  #cursor-ring { width:36px;height:36px;border:1.5px solid rgba(5,150,105,0.4);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:all .15s ease; }
+
+  /* NAV */
+  nav { position:fixed;top:0;left:0;right:0;z-index:100;padding:20px 60px;display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,0.9);backdrop-filter:blur(20px);border-bottom:1px solid rgba(0,0,0,0.06); }
+  .nav-logo { font-family:'Syne',sans-serif;font-weight:800;font-size:1.25rem;letter-spacing:-0.02em;color:var(--ink);text-decoration:none;display:block; }
+  .nav-logo span { color:var(--accent); }
+  .nav-links { display:flex;gap:40px;list-style:none; }
+  .nav-links a { font-size:.875rem;color:var(--mid);text-decoration:none;transition:color .2s; }
+  .nav-links a:hover,.nav-links a.active { color:var(--ink); }
+  .nav-cta { background:var(--ink);color:var(--white);padding:10px 24px;border-radius:100px;font-size:.875rem;font-weight:500;text-decoration:none;transition:all .2s; }
+  .nav-cta:hover { background:var(--accent); }
+
+  /* REVEAL */
+  .reveal { opacity:0;transform:translateY(36px);transition:opacity .8s ease,transform .8s ease; }
+  .reveal.visible { opacity:1;transform:translateY(0); }
+  .delay-1 { transition-delay:.1s; }
+  .delay-2 { transition-delay:.22s; }
+  .delay-3 { transition-delay:.38s; }
+
+  /* PAGE HERO */
+  .page-hero { min-height:72vh;padding:160px 60px 100px;background:var(--off);position:relative;overflow:hidden;display:flex;align-items:center; }
+  .hero-bg-shape { position:absolute;right:-200px;top:-100px;width:700px;height:700px;border-radius:50%;background:radial-gradient(circle,rgba(5,150,105,0.08) 0%,transparent 70%);pointer-events:none; }
+  .hero-bg-line { position:absolute;inset:0;background-image:linear-gradient(rgba(0,0,0,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,0,0,0.03) 1px,transparent 1px);background-size:60px 60px; }
+  .page-hero-content { position:relative;z-index:2;max-width:820px; }
+  .page-tag { display:inline-flex;align-items:center;gap:8px;background:rgba(5,150,105,0.08);border:1px solid rgba(5,150,105,0.18);padding:6px 16px;border-radius:100px;font-size:.78rem;font-weight:500;color:var(--accent);letter-spacing:.06em;text-transform:uppercase;margin-bottom:36px;opacity:0;animation:fadeUp .8s .2s forwards; }
+  .page-hero h1 { font-family:'Instrument Serif',serif;font-size:clamp(3rem,6vw,5.5rem);line-height:1.05;letter-spacing:-.02em;margin-bottom:28px;opacity:0;animation:fadeUp .9s .4s forwards; }
+  .page-hero h1 em { font-style:italic;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; }
+  .page-hero p { font-size:1.15rem;line-height:1.75;color:var(--mid);max-width:580px;font-weight:300;opacity:0;animation:fadeUp .9s .6s forwards; }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(28px)} to{opacity:1;transform:translateY(0)} }
+
+  /* SCROLL INDICATOR */
+  .scroll-hint { position:absolute;bottom:40px;left:60px;display:flex;align-items:center;gap:12px;opacity:0;animation:fadeUp .8s 1s forwards; }
+  .scroll-line { width:40px;height:1px;background:var(--mid);position:relative;overflow:hidden; }
+  .scroll-line::after { content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:var(--accent);animation:slideLine 2s ease-in-out infinite; }
+  @keyframes slideLine { from{left:-100%} to{left:100%} }
+  .scroll-hint span { font-size:.75rem;color:var(--mid);letter-spacing:.08em;text-transform:uppercase; }
+
+  /* STATS ROW */
+  .stats-row { background:var(--ink);padding:60px;display:grid;grid-template-columns:repeat(4,1fr);gap:40px; }
+  .stat-item { text-align:center; }
+  .stat-num { font-family:'Syne',sans-serif;font-size:3rem;font-weight:800;color:var(--white);letter-spacing:-.03em;margin-bottom:8px; }
+  .stat-num span { color:var(--accent); }
+  .stat-label { font-size:.8rem;color:rgba(255,255,255,0.4);letter-spacing:.06em;text-transform:uppercase; }
+
+  /* STORY */
+  .story { padding:140px 60px; }
+  .story-grid { display:grid;grid-template-columns:1fr 1fr;gap:120px;align-items:start; }
+  .story-left .label { font-size:.78rem;text-transform:uppercase;letter-spacing:.12em;color:var(--mid);margin-bottom:24px;display:block; }
+  .story-left h2 { font-family:'Instrument Serif',serif;font-size:clamp(2.2rem,3.5vw,3.2rem);line-height:1.15;letter-spacing:-.02em;margin-bottom:0; }
+  .story-right { padding-top:16px; }
+  .story-right p { font-size:1rem;line-height:1.85;color:var(--mid);font-weight:300;margin-bottom:20px; }
+  .story-right p strong { color:var(--ink);font-weight:500; }
+  .story-quote { margin:40px 0;padding:32px 36px;background:var(--off);border-left:3px solid var(--accent);border-radius:0 16px 16px 0; }
+  .story-quote p { font-family:'Instrument Serif',serif;font-size:1.4rem;line-height:1.5;color:var(--ink);margin:0; }
+  .story-quote cite { display:block;margin-top:12px;font-size:.8rem;color:var(--mid);font-style:normal;letter-spacing:.04em; }
+
+  /* TIMELINE */
+  .journey { padding:0 60px 140px; }
+  .journey h2 { font-family:'Instrument Serif',serif;font-size:clamp(2rem,3vw,2.8rem);letter-spacing:-.02em;margin-bottom:80px; }
+  .journey-items { position:relative; }
+  .journey-items::before { content:'';position:absolute;left:0;top:12px;bottom:0;width:1px;background:linear-gradient(to bottom,var(--accent),transparent); }
+  .journey-item { padding-left:48px;padding-bottom:60px;position:relative; }
+  .journey-item::before { content:'';position:absolute;left:-5px;top:8px;width:11px;height:11px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 4px rgba(5,150,105,0.15); }
+  .journey-year { font-family:'Syne',sans-serif;font-size:.75rem;font-weight:700;color:var(--accent);letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px; }
+  .journey-item h3 { font-family:'Syne',sans-serif;font-size:1.2rem;font-weight:700;margin-bottom:10px;letter-spacing:-.01em; }
+  .journey-item p { font-size:.95rem;line-height:1.75;color:var(--mid);font-weight:300;max-width:560px; }
+
+  /* MEMBER SOCIALS */
+  .member-avatar { width:100%;aspect-ratio:1;border-radius:24px;margin-bottom:24px;display:flex;align-items:flex-end;justify-content:center;position:relative;overflow:hidden; }
+  .member-avatar svg { width:100%;height:100%;display:block;transition:transform .4s ease; }
+  .team-member:hover .member-avatar svg { transform:scale(1.03); }
+  .member-name { font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:700;margin-bottom:6px;letter-spacing:-.01em; }
+  .member-role { font-size:.85rem;color:var(--accent);font-weight:500;margin-bottom:12px;letter-spacing:.02em; }
+  .member-bio { font-size:.9rem;line-height:1.7;color:var(--mid);font-weight:300; }
+  .member-socials { display:flex;gap:8px;margin-top:14px; }
+  .msoc { width:30px;height:30px;border-radius:50%;background:var(--off);border:1px solid var(--light);display:flex;align-items:center;justify-content:center;font-size:.75rem;text-decoration:none;transition:all .2s;color:var(--mid); }
+  .msoc:hover { background:var(--accent);color:white;border-color:var(--accent); }
+
+  /* SKILLS SECTION */
+  .skills { padding:0 60px 140px;background:var(--ink); }
+  .skills-intro { max-width:600px;margin-bottom:72px; }
+  .skills-intro .label { font-size:.78rem;text-transform:uppercase;letter-spacing:.12em;color:rgba(255,255,255,.35);margin-bottom:20px;display:block; }
+  .skills-intro h2 { font-family:'Instrument Serif',serif;font-size:clamp(2rem,3vw,3rem);line-height:1.15;letter-spacing:-.02em;color:var(--white); }
+  .skills-grid { display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(255,255,255,.07); }
+  .skill-tile { padding:40px 36px;background:var(--ink);transition:background .3s;cursor:default; }
+  .skill-tile:hover { background:rgba(5,150,105,.07); }
+  .sk-icon { font-size:2rem;margin-bottom:18px;display:block; }
+  .sk-title { font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;color:var(--white);margin-bottom:10px; }
+  .sk-desc { font-size:.875rem;line-height:1.7;color:rgba(255,255,255,.42);font-weight:300; }
+  .sk-tags { display:flex;flex-wrap:wrap;gap:6px;margin-top:14px; }
+  .sk-tag { font-size:.68rem;font-weight:600;letter-spacing:.05em;text-transform:uppercase;padding:3px 10px;border-radius:100px;background:rgba(5,150,105,.15);color:#6ee7b7;border:1px solid rgba(5,150,105,.2); }
+
+  /* VALUES */
+  .values { padding:140px 60px;background:var(--off); }
+  .values-grid { display:grid;grid-template-columns:1fr 1.5fr;gap:100px;align-items:center; }
+  .values-left .section-intro { margin-bottom:0; }
+  .values-right { display:flex;flex-direction:column;gap:0; }
+  .value-item { padding:32px 0;border-bottom:1px solid var(--light);display:flex;gap:24px;align-items:flex-start;transition:padding-left .3s; }
+  .value-item:hover { padding-left:8px; }
+  .value-num { font-family:'Syne',sans-serif;font-size:.75rem;font-weight:700;color:var(--accent);letter-spacing:.08em;margin-top:4px;flex-shrink:0; }
+  .value-text h3 { font-family:'Syne',sans-serif;font-size:1.05rem;font-weight:700;margin-bottom:8px;letter-spacing:-.01em; }
+  .value-text p { font-size:.9rem;line-height:1.7;color:var(--mid);font-weight:300; }
+
+  /* CTA */
+  .cta-strip { padding:120px 60px;background:var(--ink);text-align:center;position:relative;overflow:hidden; }
+  .cta-strip-bg { position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 50%,rgba(5,150,105,0.1) 0%,transparent 70%); }
+  .cta-strip h2 { font-family:'Instrument Serif',serif;font-size:clamp(2.5rem,5vw,4.5rem);color:var(--white);line-height:1.1;letter-spacing:-.02em;max-width:700px;margin:0 auto 32px;position:relative; }
+  .cta-strip h2 em { font-style:italic;background:linear-gradient(135deg,#6ee7b7,#34d399);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; }
+  .cta-strip p { color:rgba(255,255,255,.45);font-size:1rem;font-weight:300;margin-bottom:44px;position:relative; }
+  .cta-btns { display:flex;gap:16px;justify-content:center;position:relative; }
+  .btn-white { background:var(--white);color:var(--ink);padding:14px 36px;border-radius:100px;font-size:.95rem;font-weight:500;text-decoration:none;transition:all .3s; }
+  .btn-white:hover { transform:scale(1.02);box-shadow:0 0 40px rgba(255,255,255,.15); }
+  .btn-ghost-w { border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.7);padding:14px 36px;border-radius:100px;font-size:.95rem;font-weight:500;text-decoration:none;transition:all .3s; }
+  .btn-ghost-w:hover { border-color:rgba(255,255,255,.5);color:var(--white); }
+
+  /* FOOTER */
+  footer { background:var(--ink);border-top:1px solid rgba(255,255,255,.06);padding:60px;display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:60px; }
+  .footer-brand .logo { font-family:'Syne',sans-serif;font-size:1.25rem;font-weight:800;color:var(--white);margin-bottom:16px; }
+  .footer-brand .logo span { color:var(--accent); }
+  .footer-brand p { font-size:.875rem;color:rgba(255,255,255,.3);line-height:1.7;font-weight:300;max-width:280px; }
+  .footer-col h4 { font-size:.75rem;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.25);margin-bottom:20px; }
+  .footer-col a { display:block;color:rgba(255,255,255,.45);text-decoration:none;font-size:.875rem;margin-bottom:10px;transition:color .2s; }
+  .footer-col a:hover { color:var(--white); }
+  .footer-bottom { padding:24px 60px;background:var(--ink);border-top:1px solid rgba(255,255,255,.05);display:flex;justify-content:space-between;align-items:center; }
+  .footer-bottom p { font-size:.8rem;color:rgba(255,255,255,.2); }
+
+  @media(max-width:900px) {
+    nav { padding:16px 24px; } .nav-links { display:none; }
+    .page-hero,.story,.journey,.team,.values,.cta-strip,.skills { padding:80px 24px; }
+    .story-grid,.team-layout,.values-grid { grid-template-columns:1fr;gap:48px; }
+    .stats-row { grid-template-columns:1fr 1fr;padding:40px 24px; }
+    .skills-grid { grid-template-columns:1fr; }
+    footer { grid-template-columns:1fr;gap:32px; }
+    .footer-bottom { flex-direction:column;gap:8px;padding:24px; }
+    .scroll-hint { display:none; }
+  }
+</style>
+</head>
+<body>
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+
+<nav>
+  <a href="zet-technologies.html" class="nav-logo">Zet<span>.</span>Technologies</a>
+  <ul class="nav-links">
+    <li><a href="zet-technologies.html">Home</a></li>
+    <li><a href="about.html" class="active">About</a></li>
+    <li><a href="careers.html">Careers</a></li>
+    <li><a href="blog.html">Blog</a></li>
+    <li><a href="contact.html">Contact</a></li>
+  </ul>
+  <a href="contact.html" class="nav-cta">Get in Touch</a>
+</nav>
+
+<!-- HERO -->
+<section class="page-hero">
+  <div class="hero-bg-shape"></div>
+  <div class="hero-bg-line"></div>
+  <div class="page-hero-content">
+    <div class="page-tag">Who We Are</div>
+    <h1>We're just getting started — and we're <em>building for real.</em></h1>
+    <p>Zet Technologies is a brand-new startup founded by engineers who got tired of watching real problems go unsolved. We have the skills, the hunger, and the conviction to build products that actually matter.</p>
+  </div>
+  <div class="scroll-hint">
+    <div class="scroll-line"></div>
+    <span>Scroll to explore</span>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats-row">
+  <div class="stat-item reveal">
+    <div class="stat-num">3<span>+</span></div>
+    <div class="stat-label">Founders</div>
+  </div>
+  <div class="stat-item reveal delay-1">
+    <div class="stat-num">6<span>+</span></div>
+    <div class="stat-label">Core Skills</div>
+  </div>
+  <div class="stat-item reveal delay-2">
+    <div class="stat-num">Day<span> 1</span></div>
+    <div class="stat-label">We Just Started</div>
+  </div>
+  <div class="stat-item reveal delay-3">
+    <div class="stat-num">∞</div>
+    <div class="stat-label">Problems to Solve</div>
+  </div>
+</div>
+
+<!-- STORY -->
+<section class="story">
+  <div class="story-grid">
+    <div class="story-left reveal">
+      <span class="label">The Origin</span>
+      <h2>Three engineers, one shared frustration — too many real problems, too few people actually building solutions.</h2>
+    </div>
+    <div class="story-right reveal delay-2">
+      <p>Zet Technologies is <strong>brand new.</strong> No funding round. No big office. Just three founders with deep technical skills and a genuine belief that the best startups are built by people who care about the problem more than the pitch deck.</p>
+      <p>We come from backgrounds in full-stack development, machine learning, AI agents, mobile apps, and DevOps. Between us, we've built production systems, trained real models, shipped apps, and scaled infrastructure. <strong>We know how to build — now we're choosing what to build.</strong></p>
+      <div class="story-quote">
+        <p>"We're not here to look like a startup. We're here to solve something real and build something that lasts."</p>
+        <cite>— Mallela Kranthi Kiran, Founder & CEO, Zet Technologies</cite>
+      </div>
+      <p>We're at day one. Our roadmap is clear, our conviction is high, and our combined skill set covers everything needed to take an idea from napkin to production — without depending on anyone else to build it for us.</p>
+    </div>
+  </div>
+</section>
+
+<!-- JOURNEY -->
+<section class="journey">
+  <h2 class="reveal">Our journey — it starts right now</h2>
+  <div class="journey-items">
+    <div class="journey-item reveal">
+      <div class="journey-year">The Spark</div>
+      <h3>Noticed a Gap — Too Many Unsolved Problems</h3>
+      <p>We looked around and saw the same pattern everywhere: real-world problems that millions of people face daily, with no good software solution in sight. Not because the problems are hard — but because the right team hadn't focused on them yet.</p>
+    </div>
+    <div class="journey-item reveal">
+      <div class="journey-year">The Team Forms</div>
+      <h3>Three Founders. One Technical Stack That Can Build Anything.</h3>
+      <p>Kranthi Kiran, Venkat Sadwik, and Venkat Reddy came together with complementary skills covering the full spectrum: frontend, backend, AI/ML, mobile, DevOps, and operations. No gap in what we can build.</p>
+    </div>
+    <div class="journey-item reveal">
+      <div class="journey-year">The Decision</div>
+      <h3>We Decided to Stop Waiting and Start Building</h3>
+      <p>We registered Zet Technologies and committed to building products that solve genuine problems for real people — not features for feature's sake. The company exists because we believe execution beats intention every time.</p>
+    </div>
+    <div class="journey-item reveal">
+      <div class="journey-year">Right Now</div>
+      <h3>Day One — Scoping the First Product</h3>
+      <p>We're actively identifying the problem we'll attack first. The criteria: real pain, large enough to matter, and something our technical depth gives us a genuine edge in solving. Watch this space.</p>
+    </div>
+    <div class="journey-item reveal">
+      <div class="journey-year">What's Next</div>
+      <h3>Build. Ship. Iterate. Repeat.</h3>
+      <p>Our playbook is simple — move fast, stay close to users, don't over-engineer until there's something real to engineer. We'll be sharing updates on what we're building and why as we go.</p>
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section class="skills">
+  <div class="skills-intro reveal">
+    <span class="label">What We Bring</span>
+    <h2>Our collective technical stack — we can build anything end to end</h2>
+  </div>
+  <div class="skills-grid">
+    <div class="skill-tile reveal">
+      <span class="sk-icon">🖥️</span>
+      <div class="sk-title">Full-Stack Development</div>
+      <div class="sk-desc">From pixel-perfect frontends to robust, scalable APIs. We build complete web products that work fast, look great, and handle real-world traffic.</div>
+      <div class="sk-tags">
+        <span class="sk-tag">React</span>
+        <span class="sk-tag">Node.js</span>
+        <span class="sk-tag">Next.js</span>
+        <span class="sk-tag">PostgreSQL</span>
+      </div>
+    </div>
+    <div class="skill-tile reveal d1">
+      <span class="sk-icon">🤖</span>
+      <div class="sk-title">Machine Learning & AI</div>
+      <div class="sk-desc">Training real models on real data. From demand forecasting and recommendation engines to classification and NLP — we build AI that actually solves something.</div>
+      <div class="sk-tags">
+        <span class="sk-tag">PyTorch</span>
+        <span class="sk-tag">Scikit-learn</span>
+        <span class="sk-tag">TensorFlow</span>
+        <span class="sk-tag">Python</span>
+      </div>
+    </div>
+    <div class="skill-tile reveal d2">
+      <span class="sk-icon">🧠</span>
+      <div class="sk-title">AI Agents & Automation</div>
+      <div class="sk-desc">Building autonomous agents that reason, decide, and act. LLM-powered workflows, tool-use systems, and intelligent automation that replaces repetitive human tasks.</div>
+      <div class="sk-tags">
+        <span class="sk-tag">LLMs</span>
+        <span class="sk-tag">LangChain</span>
+        <span class="sk-tag">RAG</span>
+        <span class="sk-tag">Agents</span>
+      </div>
+    </div>
+    <div class="skill-tile reveal">
+      <span class="sk-icon">📱</span>
+      <div class="sk-title">App Development</div>
+      <div class="sk-desc">Mobile-first, cross-platform apps that users actually love. Built for Indian network conditions — fast, lightweight, and reliable on any Android or iOS device.</div>
+      <div class="sk-tags">
+        <span class="sk-tag">React Native</span>
+        <span class="sk-tag">Flutter</span>
+        <span class="sk-tag">Android</span>
+        <span class="sk-tag">iOS</span>
+      </div>
+    </div>
+    <div class="skill-tile reveal d1">
+      <span class="sk-icon">⚙️</span>
+      <div class="sk-title">DevOps & Infrastructure</div>
+      <div class="sk-desc">CI/CD pipelines, cloud infrastructure, containerisation, and monitoring. We ship reliably and keep things running — no downtime, no broken deploys, no surprises.</div>
+      <div class="sk-tags">
+        <span class="sk-tag">Docker</span>
+        <span class="sk-tag">AWS</span>
+        <span class="sk-tag">GitHub Actions</span>
+        <span class="sk-tag">Linux</span>
+      </div>
+    </div>
+    <div class="skill-tile reveal d2">
+      <span class="sk-icon">🔍</span>
+      <div class="sk-title">Data & Analytics</div>
+      <div class="sk-desc">Turning raw data into decisions. We design data pipelines, dashboards, and reporting systems that give businesses the visibility they need to act with confidence.</div>
+      <div class="sk-tags">
+        <span class="sk-tag">SQL</span>
+        <span class="sk-tag">Pandas</span>
+        <span class="sk-tag">Dashboards</span>
+        <span class="sk-tag">ETL</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TEAM -->
+<section class="team">
+  <div class="section-intro reveal">
+    <span class="label">The Team</span>
+    <h2>Three builders who decided to stop talking and start shipping</h2>
+  </div>
+  <div class="team-layout">
+
+    <!-- MALLELA KRANTHI KIRAN -->
+    <div class="team-member reveal">
+      <div class="member-avatar">
+        <svg viewBox="0 0 400 420" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="bg1" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#d1fae5"/>
+              <stop offset="100%" stop-color="#6ee7b7"/>
+            </linearGradient>
+            <linearGradient id="skin1" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#FBBF7A"/>
+              <stop offset="100%" stop-color="#E8956A"/>
+            </linearGradient>
+            <linearGradient id="shirt1" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#059669"/>
+              <stop offset="100%" stop-color="#047857"/>
+            </linearGradient>
+            <clipPath id="clip1"><rect width="400" height="420" rx="24"/></clipPath>
+          </defs>
+          <g clip-path="url(#clip1)">
+            <rect width="400" height="420" fill="url(#bg1)"/>
+            <circle cx="360" cy="60" r="50" fill="none" stroke="rgba(255,255,255,.15)" stroke-width="1"/>
+            <circle cx="360" cy="60" r="85" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="1"/>
+            <circle cx="30" cy="30" r="3" fill="rgba(255,255,255,.25)"/>
+            <circle cx="80" cy="15" r="2" fill="rgba(255,255,255,.18)"/>
+            <!-- Body -->
+            <ellipse cx="200" cy="500" rx="160" ry="120" fill="url(#shirt1)"/>
+            <ellipse cx="200" cy="432" rx="100" ry="80" fill="url(#shirt1)"/>
+            <path d="M160 340 L200 370 L240 340 L230 420 L170 420 Z" fill="#065f46"/>
+            <!-- Neck -->
+            <rect x="177" y="295" width="46" height="55" rx="12" fill="url(#skin1)"/>
+            <!-- Head -->
+            <ellipse cx="200" cy="240" rx="78" ry="85" fill="url(#skin1)"/>
+            <!-- Hair -->
+            <ellipse cx="200" cy="170" rx="78" ry="40" fill="#1a0a00"/>
+            <ellipse cx="200" cy="162" rx="70" ry="30" fill="#2d1200"/>
+            <!-- Ears -->
+            <ellipse cx="124" cy="245" rx="12" ry="16" fill="#E8956A"/>
+            <ellipse cx="276" cy="245" rx="12" ry="16" fill="#E8956A"/>
+            <!-- Eyes -->
+            <ellipse cx="172" cy="240" rx="12" ry="13" fill="white"/>
+            <ellipse cx="228" cy="240" rx="12" ry="13" fill="white"/>
+            <circle cx="174" cy="241" r="7" fill="#1a0a00"/>
+            <circle cx="230" cy="241" r="7" fill="#1a0a00"/>
+            <circle cx="176" cy="239" r="2.5" fill="white"/>
+            <circle cx="232" cy="239" r="2.5" fill="white"/>
+            <!-- Eyebrows -->
+            <path d="M158 224 Q172 217 186 221" stroke="#1a0a00" stroke-width="3" fill="none" stroke-linecap="round"/>
+            <path d="M214 221 Q228 217 242 224" stroke="#1a0a00" stroke-width="3" fill="none" stroke-linecap="round"/>
+            <!-- Nose -->
+            <path d="M196 252 Q193 265 188 270 Q196 274 212 270 Q207 265 204 252" fill="#d4845a" opacity=".55"/>
+            <!-- Smile -->
+            <path d="M180 285 Q200 300 220 285" stroke="#c0614a" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+            <!-- Badge -->
+            <rect x="145" y="384" width="110" height="26" rx="6" fill="rgba(255,255,255,.28)"/>
+            <text x="200" y="401" text-anchor="middle" font-family="sans-serif" font-size="9" fill="white" font-weight="bold">FOUNDER &amp; CEO</text>
+          </g>
+        </svg>
+      </div>
+      <div class="member-name">Mallela Kranthi Kiran</div>
+      <div class="member-role">Founder & CEO</div>
+      <div class="member-bio">Full-stack developer and product thinker leading Zet's vision. Skilled in building end-to-end web applications, system architecture, and translating real-world problems into scalable software solutions.</div>
+      <div class="member-socials">
+        <a href="#" class="msoc" title="LinkedIn">in</a>
+        <a href="#" class="msoc" title="Twitter">𝕏</a>
+        <a href="mailto:kranthi@zettech.in" class="msoc" title="Email">@</a>
+      </div>
+    </div>
+
+    <!-- VENKAT SADWIK -->
+    <div class="team-member reveal delay-1">
+      <div class="member-avatar">
+        <svg viewBox="0 0 400 420" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="bg2" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#cffafe"/>
+              <stop offset="100%" stop-color="#67e8f9"/>
+            </linearGradient>
+            <linearGradient id="skin2" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#F5C09A"/>
+              <stop offset="100%" stop-color="#E09070"/>
+            </linearGradient>
+            <linearGradient id="shirt2" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#0891b2"/>
+              <stop offset="100%" stop-color="#0e7490"/>
+            </linearGradient>
+            <clipPath id="clip2"><rect width="400" height="420" rx="24"/></clipPath>
+          </defs>
+          <g clip-path="url(#clip2)">
+            <rect width="400" height="420" fill="url(#bg2)"/>
+            <circle cx="50" cy="380" r="65" fill="none" stroke="rgba(255,255,255,.14)" stroke-width="1"/>
+            <circle cx="50" cy="380" r="105" fill="none" stroke="rgba(255,255,255,.07)" stroke-width="1"/>
+            <circle cx="370" cy="25" r="2.5" fill="rgba(255,255,255,.25)"/>
+            <!-- Body -->
+            <ellipse cx="200" cy="500" rx="160" ry="120" fill="url(#shirt2)"/>
+            <ellipse cx="200" cy="432" rx="100" ry="80" fill="url(#shirt2)"/>
+            <path d="M163 338 L200 365 L237 338 L228 420 L172 420 Z" fill="#075985"/>
+            <!-- Neck -->
+            <rect x="178" y="293" width="44" height="52" rx="11" fill="url(#skin2)"/>
+            <!-- Head -->
+            <ellipse cx="200" cy="238" rx="76" ry="83" fill="url(#skin2)"/>
+            <!-- Hair -->
+            <ellipse cx="200" cy="168" rx="76" ry="38" fill="#0f0800"/>
+            <path d="M126 195 Q140 154 200 157 Q260 154 274 195" fill="#0f0800"/>
+            <!-- Ears -->
+            <ellipse cx="126" cy="243" rx="11" ry="15" fill="#E09070"/>
+            <ellipse cx="274" cy="243" rx="11" ry="15" fill="#E09070"/>
+            <!-- Eyes -->
+            <ellipse cx="173" cy="238" rx="11" ry="12" fill="white"/>
+            <ellipse cx="227" cy="238" rx="11" ry="12" fill="white"/>
+            <circle cx="175" cy="239" r="6.5" fill="#0f0800"/>
+            <circle cx="229" cy="239" r="6.5" fill="#0f0800"/>
+            <circle cx="177" cy="237" r="2" fill="white"/>
+            <circle cx="231" cy="237" r="2" fill="white"/>
+            <!-- Glasses -->
+            <rect x="158" y="227" width="32" height="22" rx="8" fill="none" stroke="#334155" stroke-width="2.5"/>
+            <rect x="210" y="227" width="32" height="22" rx="8" fill="none" stroke="#334155" stroke-width="2.5"/>
+            <line x1="190" y1="237" x2="210" y2="237" stroke="#334155" stroke-width="2.5"/>
+            <!-- Eyebrows -->
+            <path d="M160 222 Q173 215 186 219" stroke="#0f0800" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+            <path d="M214 219 Q227 215 240 222" stroke="#0f0800" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+            <!-- Nose -->
+            <path d="M197 250 Q194 262 190 267 Q198 271 210 267 Q206 262 203 250" fill="#c8785a" opacity=".5"/>
+            <!-- Smile -->
+            <path d="M182 282 Q200 296 218 282" stroke="#b85a40" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+            <!-- Badge -->
+            <rect x="148" y="384" width="104" height="26" rx="6" fill="rgba(255,255,255,.28)"/>
+            <text x="200" y="401" text-anchor="middle" font-family="sans-serif" font-size="9" fill="white" font-weight="bold">CO-FOUNDER</text>
+          </g>
+        </svg>
+      </div>
+      <div class="member-name">Venkat Sadwik</div>
+      <div class="member-role">Co-Founder</div>
+      <div class="member-bio">ML engineer and AI specialist driving Zet's intelligence layer. Builds machine learning models, AI agents, and data pipelines. Believes the best products learn from their users automatically, not manually.</div>
+      <div class="member-socials">
+        <a href="#" class="msoc" title="LinkedIn">in</a>
+        <a href="#" class="msoc" title="Twitter">𝕏</a>
+        <a href="mailto:sadwik@zettech.in" class="msoc" title="Email">@</a>
+      </div>
+    </div>
+
+    <!-- VENKAT REDDY -->
+    <div class="team-member reveal delay-2">
+      <div class="member-avatar">
+        <svg viewBox="0 0 400 420" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="bg3" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#fef3c7"/>
+              <stop offset="100%" stop-color="#fcd34d"/>
+            </linearGradient>
+            <linearGradient id="skin3" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#F0AC78"/>
+              <stop offset="100%" stop-color="#D8835A"/>
+            </linearGradient>
+            <linearGradient id="shirt3" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#92400e"/>
+              <stop offset="100%" stop-color="#78350f"/>
+            </linearGradient>
+            <clipPath id="clip3"><rect width="400" height="420" rx="24"/></clipPath>
+          </defs>
+          <g clip-path="url(#clip3)">
+            <rect width="400" height="420" fill="url(#bg3)"/>
+            <circle cx="370" cy="370" r="80" fill="rgba(255,255,255,.12)"/>
+            <circle cx="370" cy="370" r="130" fill="rgba(255,255,255,.06)"/>
+            <circle cx="25" cy="20" r="2.5" fill="rgba(255,255,255,.28)"/>
+            <!-- Body -->
+            <ellipse cx="200" cy="500" rx="160" ry="120" fill="url(#shirt3)"/>
+            <ellipse cx="200" cy="432" rx="100" ry="80" fill="url(#shirt3)"/>
+            <path d="M160 336 L200 360 L240 336 L232 420 L168 420 Z" fill="#451a03"/>
+            <line x1="200" y1="360" x2="200" y2="420" stroke="#6b2100" stroke-width="2"/>
+            <!-- Neck -->
+            <rect x="177" y="292" width="46" height="52" rx="12" fill="url(#skin3)"/>
+            <!-- Head -->
+            <ellipse cx="200" cy="235" rx="80" ry="86" fill="url(#skin3)"/>
+            <!-- Hair -->
+            <ellipse cx="200" cy="162" rx="80" ry="40" fill="#1a0900"/>
+            <path d="M122 200 Q136 157 200 160 Q264 157 278 200" fill="#1a0900"/>
+            <!-- Ears -->
+            <ellipse cx="122" cy="240" rx="12" ry="16" fill="#D8835A"/>
+            <ellipse cx="278" cy="240" rx="12" ry="16" fill="#D8835A"/>
+            <!-- Eyes -->
+            <ellipse cx="172" cy="235" rx="12" ry="13" fill="white"/>
+            <ellipse cx="228" cy="235" rx="12" ry="13" fill="white"/>
+            <circle cx="174" cy="236" r="7" fill="#1a0900"/>
+            <circle cx="230" cy="236" r="7" fill="#1a0900"/>
+            <circle cx="176" cy="234" r="2.5" fill="white"/>
+            <circle cx="232" cy="234" r="2.5" fill="white"/>
+            <!-- Eyebrows -->
+            <path d="M156 218 Q172 211 188 215" stroke="#1a0900" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+            <path d="M212 215 Q228 211 244 218" stroke="#1a0900" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+            <!-- Nose -->
+            <path d="M196 250 Q192 264 187 269 Q196 274 213 269 Q208 264 204 250" fill="#b86840" opacity=".5"/>
+            <!-- Confident smile -->
+            <path d="M179 283 Q200 298 221 283" stroke="#a0502e" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+            <!-- Badge -->
+            <rect x="130" y="383" width="140" height="26" rx="6" fill="rgba(255,255,255,.28)"/>
+            <text x="200" y="400" text-anchor="middle" font-family="sans-serif" font-size="8" fill="white" font-weight="bold">HEAD OF OPERATIONS</text>
+          </g>
+        </svg>
+      </div>
+      <div class="member-name">Venkat Reddy</div>
+      <div class="member-role">Head of Operations</div>
+      <div class="member-bio">App developer and DevOps engineer keeping everything running smoothly. Handles mobile development, deployment pipelines, cloud infrastructure, and making sure what the team builds actually works in the real world.</div>
+      <div class="member-socials">
+        <a href="#" class="msoc" title="LinkedIn">in</a>
+        <a href="#" class="msoc" title="Twitter">𝕏</a>
+        <a href="mailto:venkat@zettech.in" class="msoc" title="Email">@</a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- VALUES -->
+<section class="values">
+  <div class="values-grid">
+    <div class="values-left reveal">
+      <div class="section-intro">
+        <span class="label">What drives us</span>
+        <h2>Principles we actually live by — not just words on a wall</h2>
+      </div>
+    </div>
+    <div class="values-right reveal delay-2">
+      <div class="value-item">
+        <div class="value-num">01</div>
+        <div class="value-text">
+          <h3>Real problems only</h3>
+          <p>We don't build for the sake of building. Every product we create must solve a genuine pain that real people experience — not a problem we invented to sound impressive.</p>
+        </div>
+      </div>
+      <div class="value-item">
+        <div class="value-num">02</div>
+        <div class="value-text">
+          <h3>Ship fast, learn faster</h3>
+          <p>A working product beats a perfect plan. We move quickly, put things in users' hands early, and let reality tell us what to fix — not assumptions made in a meeting room.</p>
+        </div>
+      </div>
+      <div class="value-item">
+        <div class="value-num">03</div>
+        <div class="value-text">
+          <h3>Full ownership, no excuses</h3>
+          <p>We have the skills to build the full stack ourselves — frontend, backend, AI, mobile, infrastructure. We take ownership end to end. No blaming missing resources or waiting for someone else.</p>
+        </div>
+      </div>
+      <div class="value-item">
+        <div class="value-num">04</div>
+        <div class="value-text">
+          <h3>Honest about where we are</h3>
+          <p>We're at day one. We don't pretend otherwise. We believe the most credible thing a startup can do is be transparent about what they've built, what they haven't, and exactly where they're headed.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-strip reveal">
+  <div class="cta-strip-bg"></div>
+  <h2>Have a real problem that needs <em>a real solution?</em></h2>
+  <p>We're actively looking for the right problems to build on. Let's talk.</p>
+  <div class="cta-btns">
+    <a href="contact.html" class="btn-white">Start a Conversation</a>
+    <a href="contact.html" class="btn-ghost-w">Work With Us</a>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-brand">
+    <div class="logo">Zet<span>.</span>Technologies</div>
+    <p>Building the universal workforce layer for India's real-world service economy.</p>
+  </div>
+  <div class="footer-col">
+    <h4>Platform</h4>
+    <a href="#">Workforce API</a><a href="#">Demand Engine</a><a href="#">Gig Portal</a><a href="#">Route Intelligence</a>
+  </div>
+  <div class="footer-col">
+    <h4>Company</h4>
+    <a href="about.html">About Us</a><a href="careers.html">Careers</a><a href="blog.html">Blog</a><a href="#">Press</a>
+  </div>
+  <div class="footer-col">
+    <h4>Contact</h4>
+    <a href="contact.html">Get in Touch</a><a href="#">Partner with us</a><a href="#">Investor Relations</a>
+  </div>
+</footer>
+<div class="footer-bottom">
+  <p>© 2025 Zet Technologies Private Limited. All rights reserved.</p>
+  <p>Made in India 🇮🇳</p>
+</div>
+
+<script>
+const cursor=document.getElementById('cursor'),ring=document.getElementById('cursor-ring');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cursor.style.left=mx+'px';cursor.style.top=my+'px';});
+(function anim(){rx+=(mx-rx)*.12;ry+=(my-ry)*.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(anim)})();
+document.querySelectorAll('a,button').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{cursor.style.width='20px';cursor.style.height='20px';ring.style.width='50px';ring.style.height='50px';});
+  el.addEventListener('mouseleave',()=>{cursor.style.width='12px';cursor.style.height='12px';ring.style.width='36px';ring.style.height='36px';});
+});
+const obs=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');}),{threshold:.12});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+window.addEventListener('scroll',()=>{ document.querySelector('nav').style.boxShadow=window.scrollY>60?'0 2px 30px rgba(0,0,0,0.08)':'none'; });
+</script>
+</body>
+</html>

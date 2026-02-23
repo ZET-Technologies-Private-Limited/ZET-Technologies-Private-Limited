@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ecosystem — Zet Technologies</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --white: #ffffff; --off: #f8f7f5; --ink: #0d0d0d; --mid: #6b6b6b; --light: #e8e6e1;
+  --accent: #2563eb; --accent2: #7c3aed;
+}
+html { scroll-behavior: smooth; }
+body { font-family: 'DM Sans', sans-serif; background: var(--white); color: var(--ink); overflow-x: hidden; cursor: none; }
+#cursor { width:12px;height:12px;background:var(--accent);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width .3s,height .3s; }
+#cursor-ring { width:36px;height:36px;border:1.5px solid rgba(37,99,235,.4);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:all .15s ease; }
+
+/* NAV */
+nav { position:fixed;top:0;left:0;right:0;z-index:100;padding:20px 60px;display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,.9);backdrop-filter:blur(20px);border-bottom:1px solid rgba(0,0,0,.06); }
+.nav-logo { font-family:'Syne',sans-serif;font-weight:800;font-size:1.25rem;letter-spacing:-.02em;color:var(--ink);text-decoration:none; }
+.nav-logo span { color:var(--accent); }
+.nav-links { display:flex;gap:36px;list-style:none; }
+.nav-links a { font-size:.875rem;color:var(--mid);text-decoration:none;transition:color .2s; }
+.nav-links a:hover, .nav-links a.active { color:var(--ink); }
+.nav-cta { background:var(--ink);color:var(--white);padding:10px 24px;border-radius:100px;font-size:.875rem;font-weight:500;text-decoration:none;transition:all .2s; }
+.nav-cta:hover { background:var(--accent); }
+
+/* REVEAL */
+.reveal { opacity:0;transform:translateY(36px);transition:opacity .8s ease,transform .8s ease; }
+.reveal.visible { opacity:1;transform:translateY(0); }
+.d1{transition-delay:.12s;} .d2{transition-delay:.25s;} .d3{transition-delay:.4s;}
+@keyframes fadeUp { from{opacity:0;transform:translateY(28px)} to{opacity:1;transform:translateY(0)} }
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(1.3)} }
+
+/* PAGE HERO */
+.page-hero { min-height:80vh;padding:160px 60px 100px;background:var(--ink);position:relative;overflow:hidden;display:flex;align-items:center; }
+.hero-mesh { position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 70% 30%,rgba(124,58,237,.12) 0%,transparent 60%),radial-gradient(ellipse 60% 50% at 20% 70%,rgba(37,99,235,.1) 0%,transparent 60%); }
+.hero-grid { position:absolute;inset:0;opacity:.025;background-image:linear-gradient(rgba(255,255,255,.5) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.5) 1px,transparent 1px);background-size:80px 80px; }
+.page-hero-content { position:relative;z-index:2;max-width:820px; }
+.page-tag { display:inline-flex;align-items:center;gap:8px;background:rgba(37,99,235,.15);border:1px solid rgba(37,99,235,.3);padding:6px 16px;border-radius:100px;font-size:.78rem;font-weight:500;color:#93c5fd;letter-spacing:.06em;text-transform:uppercase;margin-bottom:36px;opacity:0;animation:fadeUp .8s .2s forwards; }
+.page-tag::before { content:'';width:6px;height:6px;background:#93c5fd;border-radius:50%;animation:pulse 2s infinite; }
+.page-hero h1 { font-family:'Instrument Serif',serif;font-size:clamp(3rem,6vw,5.5rem);line-height:1.05;letter-spacing:-.02em;color:var(--white);margin-bottom:28px;opacity:0;animation:fadeUp .9s .4s forwards; }
+.page-hero h1 em { font-style:italic;background:linear-gradient(135deg,#93c5fd,#c4b5fd);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; }
+.page-hero p { font-size:1.15rem;line-height:1.75;color:rgba(255,255,255,.5);max-width:580px;font-weight:300;opacity:0;animation:fadeUp .9s .6s forwards; }
+
+/* COMMON SECTION STYLES */
+.section-intro .label { font-size:.78rem;text-transform:uppercase;letter-spacing:.12em;color:var(--mid);margin-bottom:20px;display:block; }
+.section-intro h2 { font-family:'Instrument Serif',serif;font-size:clamp(2rem,3.5vw,3.2rem);line-height:1.15;letter-spacing:-.02em; }
+.section-intro p { font-size:1.05rem;line-height:1.75;color:var(--mid);font-weight:300;margin-top:16px;max-width:560px; }
+.btn-primary { background:var(--ink);color:var(--white);padding:14px 32px;border-radius:100px;font-size:.9rem;font-weight:500;text-decoration:none;display:inline-flex;align-items:center;gap:10px;transition:all .3s;position:relative;overflow:hidden; }
+.btn-primary::after { content:'';position:absolute;inset:0;background:linear-gradient(135deg,var(--accent),var(--accent2));opacity:0;transition:opacity .3s; }
+.btn-primary:hover::after { opacity:1; }
+.btn-primary span, .btn-primary svg { position:relative;z-index:1; }
+.btn-ghost { color:var(--ink);font-size:.9rem;font-weight:500;text-decoration:none;border-bottom:1px solid currentColor;padding-bottom:2px;transition:color .2s; }
+.btn-ghost:hover { color:var(--accent); }
+
+/* ========= ECOSYSTEM PAGE ========= */
+
+/* LAYER DIAGRAM */
+.layers-section { padding:120px 60px; background:var(--off); }
+.layers-layout { display:grid;grid-template-columns:1fr 1.4fr;gap:100px;align-items:center; }
+.layers-stack { display:flex;flex-direction:column;gap:0; }
+.layer-row { padding:28px 32px;border-radius:0;border-left:3px solid transparent;border-bottom:1px solid var(--light);cursor:pointer;transition:all .3s;position:relative; }
+.layer-row:first-child { border-radius:20px 20px 0 0; }
+.layer-row:last-child { border-radius:0 0 20px 20px;border-bottom:none; }
+.layer-row.active, .layer-row:hover { background:var(--white);border-left-color:var(--accent);box-shadow:0 4px 30px rgba(0,0,0,.06); }
+.layer-num { font-family:'Syne',sans-serif;font-size:.7rem;font-weight:700;color:var(--accent);letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px; }
+.layer-row h3 { font-family:'Syne',sans-serif;font-size:1.05rem;font-weight:700;margin-bottom:6px; }
+.layer-row p { font-size:.88rem;line-height:1.65;color:var(--mid);font-weight:300; }
+.layer-visual-wrap { position:relative;height:500px; }
+.layer-visual { position:absolute;inset:0;background:var(--white);border-radius:28px;border:1px solid var(--light);display:flex;align-items:center;justify-content:center;box-shadow:0 8px 60px rgba(0,0,0,.08);padding:40px;opacity:0;transition:opacity .5s;pointer-events:none; }
+.layer-visual.shown { opacity:1;pointer-events:all; }
+
+/* visual 1 — network */
+.vis-network { width:100%;height:100%;position:relative; }
+.vn-node { position:absolute;transform:translate(-50%,-50%);text-align:center; }
+.vn-circle { width:56px;height:56px;border-radius:50%;border:1px solid rgba(37,99,235,.2);background:rgba(37,99,235,.06);display:flex;align-items:center;justify-content:center;margin:0 auto 8px;font-size:1.3rem;transition:all .4s; }
+.vn-node:hover .vn-circle { background:rgba(37,99,235,.15);box-shadow:0 0 20px rgba(37,99,235,.15); }
+.vn-label { font-size:.72rem;color:var(--mid);font-weight:500;max-width:80px;margin:0 auto;line-height:1.3; }
+
+/* visual 2 — flow bars */
+.vis-demand { width:100%; }
+.vd-row { display:flex;align-items:center;gap:12px;margin-bottom:14px; }
+.vd-name { font-size:.8rem;color:var(--mid);width:80px;flex-shrink:0;font-weight:400; }
+.vd-track { flex:1;height:10px;background:var(--off);border-radius:100px;overflow:hidden; }
+.vd-bar { height:100%;border-radius:100px;background:linear-gradient(90deg,var(--accent),var(--accent2));animation:barFill 2s ease-out forwards; }
+@keyframes barFill { from{width:0} }
+.vd-val { font-size:.8rem;font-weight:600;color:var(--ink);width:36px;text-align:right; }
+
+/* visual 3 — route */
+.vis-route-wrap { width:100%;height:260px;position:relative; }
+
+/* visual 4 — gig */
+.vis-gig { display:grid;grid-template-columns:repeat(4,1fr);gap:12px;width:100%; }
+.vg-card { background:var(--off);border-radius:16px;padding:16px 12px;text-align:center;border:1px solid var(--light);transition:all .3s; }
+.vg-card:hover { border-color:var(--accent);background:rgba(37,99,235,.04); }
+.vg-icon { font-size:1.6rem;margin-bottom:8px; }
+.vg-name { font-size:.72rem;font-weight:600;margin-bottom:4px; }
+.vg-earn { font-size:.7rem;color:var(--accent); }
+
+/* HOW IT CONNECTS */
+.how-connects { padding:0 60px 120px; }
+.connects-intro { max-width:600px;margin-bottom:80px; }
+.pipeline { position:relative;display:flex;justify-content:space-between;align-items:flex-start;gap:0; }
+.pipeline::before { content:'';position:absolute;top:44px;left:10%;right:10%;height:1px;background:linear-gradient(90deg,transparent,var(--light),var(--accent),var(--light),transparent); }
+.pipe-step { flex:1;text-align:center;position:relative;padding:0 10px; }
+.pipe-circle { width:88px;height:88px;border-radius:50%;background:var(--white);border:1px solid var(--light);display:flex;align-items:center;justify-content:center;font-size:1.8rem;margin:0 auto 20px;position:relative;z-index:2;transition:all .4s;box-shadow:0 4px 20px rgba(0,0,0,.06); }
+.pipe-step:hover .pipe-circle { border-color:var(--accent);box-shadow:0 0 0 6px rgba(37,99,235,.1); }
+.pipe-step h3 { font-family:'Syne',sans-serif;font-size:.95rem;font-weight:700;margin-bottom:8px; }
+.pipe-step p { font-size:.82rem;line-height:1.6;color:var(--mid);font-weight:300; }
+.pipe-arrow { position:absolute;top:38px;right:-8%;font-size:1rem;color:var(--accent);z-index:3; }
+
+/* ECOSYSTEM PARTNERS */
+.eco-partners { padding:0 60px 120px;background:var(--white); }
+.partners-grid { display:grid;grid-template-columns:repeat(3,1fr);gap:32px;margin-top:60px; }
+.partner-tile { padding:36px;background:var(--off);border-radius:24px;border:1px solid var(--light);transition:all .3s;cursor:pointer; }
+.partner-tile:hover { background:var(--white);border-color:rgba(37,99,235,.25);box-shadow:0 8px 40px rgba(37,99,235,.08);transform:translateY(-4px); }
+.partner-icon { font-size:2.5rem;margin-bottom:20px; }
+.partner-tile h3 { font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:700;margin-bottom:8px; }
+.partner-tile p { font-size:.88rem;line-height:1.7;color:var(--mid);font-weight:300;margin-bottom:16px; }
+.partner-tag { font-size:.72rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:4px 12px;border-radius:100px;display:inline-block; }
+
+/* METRICS BANNER */
+.metrics-banner { padding:80px 60px;background:var(--ink);display:grid;grid-template-columns:repeat(5,1fr);gap:40px; }
+.metric-item { text-align:center; }
+.metric-val { font-family:'Syne',sans-serif;font-size:2.5rem;font-weight:800;color:var(--white);line-height:1;margin-bottom:8px; }
+.metric-val span { color:#93c5fd; }
+.metric-label { font-size:.78rem;color:rgba(255,255,255,.4);letter-spacing:.06em;text-transform:uppercase; }
+
+/* CTA */
+.cta-section { padding:160px 60px;background:var(--off);text-align:center;position:relative;overflow:hidden; }
+.cta-bg { position:absolute;inset:0;background:radial-gradient(ellipse 70% 60% at 30% 50%,rgba(37,99,235,.08) 0%,transparent 70%),radial-gradient(ellipse 50% 50% at 70% 50%,rgba(124,58,237,.06) 0%,transparent 70%); }
+.cta-section h2 { font-family:'Instrument Serif',serif;font-size:clamp(2.5rem,5vw,5rem);line-height:1.1;letter-spacing:-.02em;max-width:800px;margin:0 auto 32px;position:relative; }
+.cta-section h2 em { font-style:italic;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; }
+.cta-section p { color:var(--mid);font-size:1.05rem;font-weight:300;margin-bottom:48px;position:relative; }
+.cta-buttons { display:flex;gap:16px;justify-content:center;position:relative; }
+
+/* FOOTER */
+footer { background:var(--ink);border-top:1px solid rgba(255,255,255,.06);padding:60px;display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:60px; }
+.footer-brand .logo { font-family:'Syne',sans-serif;font-size:1.25rem;font-weight:800;color:var(--white);margin-bottom:16px; }
+.footer-brand .logo span { color:var(--accent); }
+.footer-brand p { font-size:.875rem;color:rgba(255,255,255,.3);line-height:1.7;font-weight:300;max-width:280px; }
+.footer-col h4 { font-size:.75rem;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.25);margin-bottom:20px; }
+.footer-col a { display:block;color:rgba(255,255,255,.45);text-decoration:none;font-size:.875rem;margin-bottom:10px;transition:color .2s; }
+.footer-col a:hover { color:var(--white); }
+.footer-bottom { padding:24px 60px;background:var(--ink);border-top:1px solid rgba(255,255,255,.05);display:flex;justify-content:space-between; }
+.footer-bottom p { font-size:.8rem;color:rgba(255,255,255,.2); }
+
+@media(max-width:900px){
+  nav{padding:16px 24px;} .nav-links{display:none;}
+  .page-hero{padding:100px 24px 60px;}
+  .layers-section,.how-connects,.eco-partners,.cta-section{padding:80px 24px;}
+  .layers-layout{grid-template-columns:1fr;gap:48px;}
+  .layer-visual-wrap{height:340px;}
+  .pipeline{flex-direction:column;align-items:center;}
+  .pipeline::before{display:none;}
+  .pipe-step{width:100%;max-width:340px;display:flex;gap:20px;align-items:flex-start;text-align:left;}
+  .pipe-circle{flex-shrink:0;margin:0;}
+  .pipe-arrow{display:none;}
+  .partners-grid{grid-template-columns:1fr;}
+  .metrics-banner{grid-template-columns:1fr 1fr;padding:40px 24px;}
+  footer{grid-template-columns:1fr;gap:32px;}
+  .footer-bottom{flex-direction:column;gap:8px;padding:24px;}
+}
+</style>
+</head>
+<body>
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+
+<nav>
+  <a href="zet-technologies.html" class="nav-logo">Zet<span>.</span>Technologies</a>
+  <ul class="nav-links">
+    <li><a href="zet-technologies.html">Home</a></li>
+    <li><a href="ecosystem.html" class="active">Ecosystem</a></li>
+    <li><a href="products.html">Products</a></li>
+    <li><a href="services.html">Services</a></li>
+    <li><a href="founder1.html">Founder</a></li>
+    <li><a href="about1.html">About</a></li>
+    <li><a href="blog.html">Blog</a></li>
+    <li><a href="contact1.html">Contact</a></li>
+  </ul>
+  <a href="contact1.html" class="nav-cta">Get in Touch</a>
+</nav>
+
+<!-- HERO -->
+<section class="page-hero">
+  <div class="hero-mesh"></div>
+  <div class="hero-grid"></div>
+  <div class="page-hero-content">
+    <div class="page-tag">The Zet Ecosystem</div>
+    <h1>One team. Full stack. <em>Infinite possibilities.</em></h1>
+    <p>The Zet ecosystem is how we think about building — a connected set of technical capabilities across web, mobile, AI, and infrastructure that lets us take any real-world problem from zero to production entirely in-house.</p>
+  </div>
+</section>
+
+<!-- LAYERS -->
+<section class="layers-section">
+  <div class="layers-layout">
+    <div class="reveal">
+      <div class="section-intro" style="margin-bottom:48px;">
+        <span class="label">Four Capability Layers</span>
+        <h2>A stack built to solve anything end-to-end</h2>
+        <p>Each layer of the Zet ecosystem is a real technical capability we own fully — from intelligent frontend experiences to AI models running in production.</p>
+      </div>
+      <div class="layers-stack">
+        <div class="layer-row active" onclick="showLayer(0)">
+          <div class="layer-num">Layer 01</div>
+          <h3>Product & Full-Stack Engineering</h3>
+          <p>React, Node.js, Next.js — we build complete, production-ready web and API products from scratch, fast.</p>
+        </div>
+        <div class="layer-row" onclick="showLayer(1)">
+          <div class="layer-num">Layer 02</div>
+          <h3>AI & Machine Learning</h3>
+          <p>Custom ML models, AI agents, and LLM-powered workflows that make our products genuinely intelligent — not just AI-branded.</p>
+        </div>
+        <div class="layer-row" onclick="showLayer(2)">
+          <div class="layer-num">Layer 03</div>
+          <h3>Mobile & App Development</h3>
+          <p>Cross-platform mobile apps in React Native and Flutter — built lean, tested on real Indian networks, shipped fast.</p>
+        </div>
+        <div class="layer-row" onclick="showLayer(3)">
+          <div class="layer-num">Layer 04</div>
+          <h3>DevOps & Infrastructure</h3>
+          <p>CI/CD, cloud deployment, monitoring, and scaling — we keep everything running reliably so products work in the real world.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="layer-visual-wrap reveal d2">
+      <!-- Visual 0: Network diagram -->
+      <div class="layer-visual shown" id="lv0">
+        <svg style="position:absolute;inset:0;width:100%;height:100%;" viewBox="0 0 420 420">
+          <line x1="210" y1="210" x2="210" y2="80" stroke="rgba(37,99,235,.12)" stroke-width="1.5" stroke-dasharray="5,5"/>
+          <line x1="210" y1="210" x2="80" y2="155" stroke="rgba(37,99,235,.12)" stroke-width="1.5" stroke-dasharray="5,5"/>
+          <line x1="210" y1="210" x2="340" y2="155" stroke="rgba(37,99,235,.12)" stroke-width="1.5" stroke-dasharray="5,5"/>
+          <line x1="210" y1="210" x2="100" y2="310" stroke="rgba(37,99,235,.12)" stroke-width="1.5" stroke-dasharray="5,5"/>
+          <line x1="210" y1="210" x2="320" y2="310" stroke="rgba(37,99,235,.12)" stroke-width="1.5" stroke-dasharray="5,5"/>
+          <circle r="4" fill="#2563eb"><animateMotion dur="2.5s" repeatCount="indefinite" path="M210,210 L210,80"/></circle>
+          <circle r="4" fill="#7c3aed"><animateMotion dur="3s" repeatCount="indefinite" path="M210,210 L80,155"/></circle>
+          <circle r="4" fill="#2563eb"><animateMotion dur="2s" repeatCount="indefinite" path="M210,210 L340,155"/></circle>
+          <circle r="4" fill="#7c3aed"><animateMotion dur="3.5s" repeatCount="indefinite" path="M210,210 L100,310"/></circle>
+          <circle r="4" fill="#2563eb"><animateMotion dur="2.8s" repeatCount="indefinite" path="M210,210 L320,310"/></circle>
+        </svg>
+        <div class="vn-node" style="top:19%;left:50%"><div class="vn-circle">📡</div><div class="vn-label">Demand Sensor</div></div>
+        <div class="vn-node" style="top:37%;left:19%"><div class="vn-circle">🏙️</div><div class="vn-label">City Node A</div></div>
+        <div class="vn-node" style="top:37%;left:81%"><div class="vn-circle">🏙️</div><div class="vn-label">City Node B</div></div>
+        <div class="vn-node" style="top:74%;left:24%"><div class="vn-circle">🛵</div><div class="vn-label">Worker Pool</div></div>
+        <div class="vn-node" style="top:74%;left:76%"><div class="vn-circle">📦</div><div class="vn-label">Order Queue</div></div>
+        <div class="vn-node" style="top:50%;left:50%"><div class="vn-circle" style="background:rgba(37,99,235,.12);border-color:rgba(37,99,235,.4);">⚡</div><div class="vn-label" style="font-weight:600;color:var(--ink)">Zet Core</div></div>
+      </div>
+
+      <!-- Visual 1: API bars -->
+      <div class="layer-visual" id="lv1">
+        <div class="vis-demand" style="padding:20px 0;">
+          <div style="font-family:'Syne',sans-serif;font-size:.8rem;font-weight:700;color:var(--mid);letter-spacing:.08em;text-transform:uppercase;margin-bottom:28px;">Tech Stack Depth</div>
+          <div class="vd-row"><span class="vd-name">Frontend</span><div class="vd-track"><div class="vd-bar" style="width:95%;animation-duration:1.8s;"></div></div><span class="vd-val">95%</span></div>
+          <div class="vd-row"><span class="vd-name">Backend</span><div class="vd-track"><div class="vd-bar" style="width:90%;animation-duration:2.1s;background:linear-gradient(90deg,#7c3aed,#6d28d9)"></div></div><span class="vd-val">90%</span></div>
+          <div class="vd-row"><span class="vd-name">ML / AI</span><div class="vd-track"><div class="vd-bar" style="width:88%;animation-duration:2.4s;background:linear-gradient(90deg,#0891b2,#0e7490)"></div></div><span class="vd-val">88%</span></div>
+          <div class="vd-row"><span class="vd-name">Mobile</span><div class="vd-track"><div class="vd-bar" style="width:85%;animation-duration:2.7s;background:linear-gradient(90deg,#059669,#047857)"></div></div><span class="vd-val">85%</span></div>
+          <div class="vd-row"><span class="vd-name">DevOps</span><div class="vd-track"><div class="vd-bar" style="width:80%;animation-duration:1.5s;background:linear-gradient(90deg,#dc2626,#b91c1c)"></div></div><span class="vd-val">80%</span></div>
+          <div style="margin-top:28px;padding-top:20px;border-top:1px solid var(--light);font-size:.8rem;color:var(--mid);">All layers owned in-house · <span style="color:#059669;font-weight:600;">●</span> No external dependency</div>
+        </div>
+      </div>
+
+      <!-- Visual 2: Route map SVG -->
+      <div class="layer-visual" id="lv2">
+        <div style="width:100%;height:100%;position:relative;">
+          <svg width="100%" height="100%" viewBox="0 0 360 320">
+            <defs>
+              <linearGradient id="rg1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#2563eb"/><stop offset="100%" stop-color="#7c3aed"/></linearGradient>
+            </defs>
+            <!-- Streets -->
+            <line x1="0" y1="160" x2="360" y2="160" stroke="rgba(0,0,0,.06)" stroke-width="12"/>
+            <line x1="180" y1="0" x2="180" y2="320" stroke="rgba(0,0,0,.06)" stroke-width="12"/>
+            <line x1="0" y1="80" x2="360" y2="80" stroke="rgba(0,0,0,.04)" stroke-width="6"/>
+            <line x1="0" y1="240" x2="360" y2="240" stroke="rgba(0,0,0,.04)" stroke-width="6"/>
+            <line x1="90" y1="0" x2="90" y2="320" stroke="rgba(0,0,0,.04)" stroke-width="6"/>
+            <line x1="270" y1="0" x2="270" y2="320" stroke="rgba(0,0,0,.04)" stroke-width="6"/>
+            <!-- Optimised route -->
+            <path d="M60,240 Q90,160 180,160 Q270,160 300,80" stroke="url(#rg1)" stroke-width="3" fill="none" stroke-dasharray="8,4"/>
+            <!-- Delivery points -->
+            <circle cx="60" cy="240" r="8" fill="#2563eb"/><circle cx="60" cy="240" r="14" fill="rgba(37,99,235,.15)"/>
+            <circle cx="180" cy="160" r="6" fill="#7c3aed" opacity=".8"/>
+            <circle cx="300" cy="80" r="8" fill="#2563eb"/><circle cx="300" cy="80" r="14" fill="rgba(37,99,235,.15)"/>
+            <!-- Moving agent -->
+            <circle r="7" fill="white" stroke="#2563eb" stroke-width="2">
+              <animateMotion dur="4s" repeatCount="indefinite" path="M60,240 Q90,160 180,160 Q270,160 300,80"/>
+            </circle>
+          </svg>
+          <div style="position:absolute;bottom:16px;left:50%;transform:translateX(-50%);font-size:.75rem;color:var(--mid);white-space:nowrap;">Mobile app flow · cross-platform · production-ready</div>
+        </div>
+      </div>
+
+      <!-- Visual 3: Gig worker cards -->
+      <div class="layer-visual" id="lv3">
+        <div class="vis-gig">
+          <div class="vg-card"><div class="vg-icon">⚛️</div><div class="vg-name">React</div><div class="vg-earn">Frontend</div></div>
+          <div class="vg-card"><div class="vg-icon">🟩</div><div class="vg-name">Node.js</div><div class="vg-earn">Backend</div></div>
+          <div class="vg-card"><div class="vg-icon">🐍</div><div class="vg-name">Python</div><div class="vg-earn">AI / ML</div></div>
+          <div class="vg-card"><div class="vg-icon">📱</div><div class="vg-name">Flutter</div><div class="vg-earn">Mobile</div></div>
+          <div class="vg-card"><div class="vg-icon">🐳</div><div class="vg-name">Docker</div><div class="vg-earn">DevOps</div></div>
+          <div class="vg-card"><div class="vg-icon">🧠</div><div class="vg-name">LLMs</div><div class="vg-earn">AI Agents</div></div>
+          <div class="vg-card"><div class="vg-icon">☁️</div><div class="vg-name">AWS</div><div class="vg-earn">Cloud</div></div>
+          <div class="vg-card" style="border:1px dashed var(--accent);background:rgba(37,99,235,.04);"><div class="vg-icon">➕</div><div class="vg-name" style="color:var(--accent)">More</div><div class="vg-earn">Growing</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT CONNECTS -->
+<section class="how-connects">
+  <div class="connects-intro reveal">
+    <span class="label section-intro">How We Build End-to-End</span>
+    <h2 class="section-intro" style="font-family:'Instrument Serif',serif;font-size:clamp(2rem,3vw,3rem);letter-spacing:-.02em;">From a real problem to a live product — in weeks, not months</h2>
+  </div>
+  <div class="pipeline">
+    <div class="pipe-step reveal">
+      <div class="pipe-circle">🎯</div>
+      <h3>Identify the Problem</h3>
+      <p>We find a real pain that real people face — not a solution in search of a problem</p>
+      <span class="pipe-arrow">→</span>
+    </div>
+    <div class="pipe-step reveal d1">
+      <div class="pipe-circle">📐</div>
+      <h3>Design the Solution</h3>
+      <p>Map the simplest possible product that solves it — no over-engineering at day one</p>
+      <span class="pipe-arrow">→</span>
+    </div>
+    <div class="pipe-step reveal d2">
+      <div class="pipe-circle">⚡</div>
+      <h3>Build Full-Stack</h3>
+      <p>Frontend, backend, AI layer, mobile — we own the whole stack so nothing waits on anyone</p>
+      <span class="pipe-arrow">→</span>
+    </div>
+    <div class="pipe-step reveal d3">
+      <div class="pipe-circle">🚀</div>
+      <h3>Ship to Real Users</h3>
+      <p>Deploy to production fast. Get it in front of users. Let reality tell us what matters</p>
+      <span class="pipe-arrow">→</span>
+    </div>
+    <div class="pipe-step reveal" style="transition-delay:.52s">
+      <div class="pipe-circle">🔄</div>
+      <h3>Iterate & Scale</h3>
+      <p>Use data and user feedback to improve. Build what sticks. Drop what doesn't. Repeat.</p>
+    </div>
+  </div>
+</section>
+
+<!-- PARTNERS -->
+<section class="eco-partners">
+  <div class="section-intro reveal" style="margin-bottom:0;">
+    <span class="label">What We Can Build For You</span>
+    <h2>Every kind of digital product — under one roof</h2>
+  </div>
+  <div class="partners-grid">
+    <div class="partner-tile reveal">
+      <div class="partner-icon">🌐</div>
+      <h3>Web Applications</h3>
+      <p>Full-stack web products — from landing pages and dashboards to complex SaaS platforms. Fast, responsive, and built to scale from day one.</p>
+      <span class="partner-tag" style="background:#eff6ff;color:#2563eb;">React · Next.js · Node</span>
+    </div>
+    <div class="partner-tile reveal d1">
+      <div class="partner-icon">🤖</div>
+      <h3>AI-Powered Products</h3>
+      <p>Products that learn, predict, and automate. Custom ML models, LLM integrations, AI agents — intelligence baked in, not bolted on.</p>
+      <span class="partner-tag" style="background:#faf5ff;color:#7c3aed;">PyTorch · LangChain · RAG</span>
+    </div>
+    <div class="partner-tile reveal d2">
+      <div class="partner-icon">📱</div>
+      <h3>Mobile Apps</h3>
+      <p>Cross-platform iOS and Android apps built for real Indian users — optimised for low bandwidth, diverse devices, and everyday use.</p>
+      <span class="partner-tag" style="background:#ecfdf5;color:#059669;">Flutter · React Native</span>
+    </div>
+    <div class="partner-tile reveal">
+      <div class="partner-icon">🧠</div>
+      <h3>AI Agents & Automation</h3>
+      <p>Autonomous agents that handle real workflows — research, data extraction, customer support, document processing. Built to run without hand-holding.</p>
+      <span class="partner-tag" style="background:#fff7ed;color:#c2410c;">Agents · Tools · APIs</span>
+    </div>
+    <div class="partner-tile reveal d1">
+      <div class="partner-icon">⚙️</div>
+      <h3>DevOps & Infrastructure</h3>
+      <p>CI/CD pipelines, containerised deployments, cloud setup and monitoring — everything needed to keep your product running reliably at any scale.</p>
+      <span class="partner-tag" style="background:#fef2f2;color:#dc2626;">Docker · AWS · GitHub Actions</span>
+    </div>
+    <div class="partner-tile reveal d2" style="border:2px dashed rgba(37,99,235,.2);background:rgba(37,99,235,.02);">
+      <div class="partner-icon">💬</div>
+      <h3>Have a Problem in Mind?</h3>
+      <p>If it can be built with software, we can build it. Tell us what you're trying to solve and we'll figure out the best approach together.</p>
+      <span class="partner-tag" style="background:rgba(37,99,235,.08);color:var(--accent);">Talk to us →</span>
+    </div>
+  </div>
+</section>
+
+<div class="metrics-banner">
+  <div class="metric-item reveal"><div class="metric-val">3<span>+</span></div><div class="metric-label">Founders</div></div>
+  <div class="metric-item reveal d1"><div class="metric-val">6<span>+</span></div><div class="metric-label">Core Skills</div></div>
+  <div class="metric-item reveal d2"><div class="metric-val">Full<span> stack</span></div><div class="metric-label">End-to-End</div></div>
+  <div class="metric-item reveal d3"><div class="metric-val">Day<span> 1</span></div><div class="metric-label">Just Started</div></div>
+  <div class="metric-item reveal" style="transition-delay:.52s"><div class="metric-val">∞</div><div class="metric-label">Problems to Solve</div></div>
+</div>
+
+<!-- CTA -->
+<section class="cta-section reveal">
+  <div class="cta-bg"></div>
+  <h2>Have a real problem that needs <em>a real solution?</em></h2>
+  <p>We're actively looking for meaningful problems to build on. Let's talk about yours.</p>
+  <div class="cta-buttons">
+    <a href="contact.html" class="btn-primary"><span>Request API Access</span><svg width="16" height="16" fill="none" viewBox="0 0 16 16"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+    <a href="products.html" class="btn-ghost">See all products</a>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-brand"><div class="logo">Zet<span>.</span>Technologies</div><p>A new startup building real software solutions with full-stack, AI, mobile, and DevOps expertise.</p></div>
+  <div class="footer-col"><h4>Platform</h4><a href="ecosystem.html">Ecosystem</a><a href="products.html">Products</a><a href="services.html">Services</a></div>
+  <div class="footer-col"><h4>Company</h4><a href="about.html">About Us</a><a href="founder.html">Founder</a><a href="careers.html">Careers</a></div>
+  <div class="footer-col"><h4>Contact</h4><a href="contact.html">Get in Touch</a><a href="#">Partner with us</a><a href="#">Investor Relations</a></div>
+</footer>
+<div class="footer-bottom"><p>© 2025 Zet Technologies Private Limited. All rights reserved.</p><p>Made in India 🇮🇳</p></div>
+
+<script>
+const cursor=document.getElementById('cursor'),ring=document.getElementById('cursor-ring');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cursor.style.left=mx+'px';cursor.style.top=my+'px';});
+(function a(){rx+=(mx-rx)*.12;ry+=(my-ry)*.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(a);})();
+document.querySelectorAll('a,button').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{cursor.style.width='20px';cursor.style.height='20px';ring.style.width='50px';ring.style.height='50px';});
+  el.addEventListener('mouseleave',()=>{cursor.style.width='12px';cursor.style.height='12px';ring.style.width='36px';ring.style.height='36px';});
+});
+function showLayer(i){
+  document.querySelectorAll('.layer-row').forEach((r,idx)=>{r.classList.toggle('active',idx===i);});
+  document.querySelectorAll('.layer-visual').forEach((v,idx)=>{v.classList.toggle('shown',idx===i);});
+}
+const obs=new IntersectionObserver(e=>e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('visible');}),{threshold:.1});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+window.addEventListener('scroll',()=>{document.querySelector('nav').style.boxShadow=window.scrollY>60?'0 2px 30px rgba(0,0,0,0.08)':'none';});
+</script>
+</body>
+</html>
